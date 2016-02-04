@@ -14,14 +14,19 @@ var through  = require('through2'),
 
 const PLUGIN_NAME = 'gulp-ractive-parse';
 
+// returns the simples way to add "name" to an object syntactically
+// eg test  => .test
+// or ux-test => ['ux-test']
 var addObjectName = function(name) {
 	return name.match(/^[$_a-zA-Z]\w+$/) ? '.' + name : '["' + name + '"]';
 };
 
+// return JS code to add the "contents" to "name" of object "prefix"
 var addName = function(prefix, name, contents) {
 	return prefix + addObjectName(name) + ' = ' + contents;
 };
 
+// function to combine all good promises (ignoring bad ones)
 var allGood = function(all) {
 	var contents = '';
 	_.map(all, function(arg) {
@@ -33,6 +38,7 @@ var allGood = function(all) {
 	return contents;
 };
 
+// get all partials from the partials directory and compile them
 var getPartials = function(partialsDir, objectName, options) {
 	return readDir(partialsDir)
 		.then(function(files) {
@@ -47,7 +53,7 @@ var getPartials = function(partialsDir, objectName, options) {
 								contents = JSON.stringify(contents);
 
 								var text = addName(
-									options.prefix +addObjectName(objectName) + '.partials',
+									options.prefix + addObjectName(objectName) + '.partials',
 									template,
 									contents
 								) + ';\n';
@@ -63,6 +69,7 @@ var getPartials = function(partialsDir, objectName, options) {
 };
 
 var getComponent;
+// Find all sub components and build them
 var getComponents = function(componentsDir, objectName, options) {
 	return readDir(componentsDir)
 		.then(function(files) {
@@ -82,11 +89,11 @@ var getComponents = function(componentsDir, objectName, options) {
 		});
 };
 
+// Build the component from "file"
 getComponent = function(file, options) {
 	var nameRE     = new RegExp(path.sep + '([^' + path.sep + ']+)$');
 	var dir        = file.replace(nameRE, '');
 	var objectName = dir.match(nameRE)[1];
-	console.log(options.prefix + ' - ' + objectName);
 
 	var js = readFile(dir + path.sep + objectName + '.js', 'utf-8')
 		.then(function(contents) {
@@ -100,7 +107,7 @@ getComponent = function(file, options) {
 			contents = JSON.stringify(contents);
 
 			return addName(
-				options.prefix + addObjectName(objectName) + '.defaults.templates',
+				'Ractive.defaults.templates',
 				objectName,
 				contents
 			) + ';\n';
@@ -112,7 +119,7 @@ getComponent = function(file, options) {
 	var componentsDir = dir + path.sep + 'components';
 	var components = getComponents(componentsDir, objectName, options);
 
-	return q.allSettled([js, hbs, partials, components])
+	return q.allSettled([hbs, js, partials, components])
 		.then(allGood);
 };
 
