@@ -7,7 +7,10 @@
     "start": "npm prune && npm install && gulp"
   },
   "dependencies": {
-    "ractive": "^0.7.3"
+    "q": "^1.4.1",
+    "ractive": "^0.7.3",
+    "through2": "~0.6.3",
+    "vinyl-sourcemaps-apply": "^0.2.0"
   },
   "repository": {
     "type": "git",
