@@ -1,0 +1,123 @@
+{
+  "generator-ractive-foundation": {
+    "appname": "gulp ractive foundation",
+    "paths": {
+      "base": "./src",
+      "components": "./src/components/",
+      "partials": "./src/partials/",
+      "public": "./public",
+      "publicJs": "./public/js",
+      "vendors": "./public/vendors",
+      "compiled": "./public/compiled"
+    },
+    "globs": {
+      "partials": "./src/partials/**/*.hbs",
+      "componentsScss": "./src/components/**/*.scss",
+      "scss": "./src/scss/*.scss",
+      "templates": "./src/*.html",
+      "componentsJs": [
+        "./src/components/**/*.js",
+        "!./src/components/**/*.steps.js"
+      ],
+      "componentsHbs": [
+        "./src/components/**/*.hbs",
+        "!./src/components/**/use-cases/*.hbs"
+      ],
+      "componentsJson": "components/**/use-cases/*.json",
+      "manifests": [
+        "./src/components/**/manifest.json",
+        "./node_modules/ractive-foundation/src/components/**/manifest.json"
+      ],
+      "srcJavaScript": [
+        "./src/core/**/*.js",
+        "./src/plugins/**/*.js",
+        "./src/support/**/*.js",
+        "./src/components/**/*.js",
+        "./src/js/**/*.js",
+        "./generator/**/*.js",
+        "./tasks/**/*.js",
+        "./test/**/*.js",
+        "./tests/**/*.js",
+        "./server.js",
+        "./gulpfile.js"
+      ],
+      "jshint": [
+        "./src/core/**/*.js",
+        "./src/plugins/**/*.js",
+        "./src/support/**/*.js",
+        "./generator/**/*.js",
+        "./tasks/**/*.js",
+        "./test/**/*.js",
+        "./tests/**/*.js",
+        "./server.js",
+        "./gulpfile.js",
+        "!src/plugins/ractiveTap.js"
+      ],
+      "vendorsJs": "./src/vendors/**/*.js",
+      "testTemplates": [
+        "./src/components/**/use-cases/*.hbs",
+        "./src/plugins/**/use-cases/*.hbs",
+        "./node_modules/ractive-foundationsrc/components/**/use-cases/*.hbs",
+        "./node_modules/ractive-foundationsrc/plugins/**/use-cases/*.hbs"
+      ],
+      "watch": [
+        "src/*.html",
+        "src/pages/*.html",
+        "src/blank-pages/*.html",
+        "src/**/*.json",
+        "src/**/*.hbs",
+        "src/**/*.md",
+        "src/**/*.js",
+        "src/**/*.scss"
+      ]
+    },
+    "port": 50943,
+    "menu": {
+      "expandedState": "",
+      "leftItems": [
+        {
+          "label": "Learn More"
+        },
+        {
+          "href": "/",
+          "label": "Home"
+        },
+        {
+          "href": "/components/components.html",
+          "label": "Components"
+        },
+        {
+          "href": "data.html",
+          "label": "Data"
+        },
+        {
+          "href": "demo.html",
+          "label": "Demo"
+        },
+        {
+          "label": "External Links"
+        },
+        {
+          "href": "http://foundation.zurb.com/docs/",
+          "label": "Foundation docs",
+          "target": "_blank"
+        },
+        {
+          "href": "http://docs.ractivejs.org/latest/get-started",
+          "label": "RactiveJS docs",
+          "target": "_blank"
+        },
+        {
+          "href": "http://github.com/ractive-foundation/ractive-foundation",
+          "label": "Ractive-Froundation",
+          "target": "_blank"
+        },
+        {
+          "href": "http://github.com/ractive-foundation/generator-ractive-foundation",
+          "label": "Yeoman generator for RF",
+          "target": "_blank"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<head>
+	<meta charset="utf-8">
+
+	<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+
+	<title>Ractive.js &amp; Foundation 5 : Documentation</title>
+
+	<script src="vendors/foundation-sites/js/vendor/modernizr.js"></script>
+
+	<link rel="stylesheet" href="/vendors/foundation/css/normalize.css">
+	<link rel="stylesheet" href="/vendors/foundation/css/foundation.css">
+	<link rel="stylesheet" href="/components/components.css">
+
+</head>
+<body>
+
+<!-- Ractive container start -->
+<div class="ractivef hide">
+
+	<!-- See ux-off-canvas/use-cases/dataDriven.json for data model. -->
+	<ux-off-canvas datamodel="{
+		title:  '<%= pkg.name %> v<%= pkg.version %>',
+		expandedState: '',
+		leftItems:  [
+			{
+				label: 'Learn More'
+			},
+			{
+				label: 'Home',
+				href: '.'
+			},
+			{
+				label: 'Components',
+				href: 'components.html'
+			},
+			{
+				label: 'Data',
+				href: 'data.html'
+			},
+			{
+				label: 'Demo',
+				href: 'demo.html'
+			},
+			{
+				label: 'External Links'
+			},
+			{
+				label: 'Foundation docs',
+				href: 'http://foundation.zurb.com/docs/'
+			},
+			{
+				label: 'RactiveJS docs',
+				href: 'http://docs.ractivejs.org/latest/get-started',
+				target: '_blank'
+			}
+		]
+	}">
+
+		<!-- Page content start -->
