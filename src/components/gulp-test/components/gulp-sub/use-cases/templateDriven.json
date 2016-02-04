@@ -1,0 +1,6 @@
+{
+	"title": "Use case via template",
+	"template": "gulp-sub-templateDriven",
+	"file": "src/components/gulp-sub/use-cases/templateDriven.hbs",
+	"data": {}
+}
