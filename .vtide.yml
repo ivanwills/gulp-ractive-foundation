@@ -1,0 +1,16 @@
+--- 
+count: 4
+default: 
+  restart: 0
+  wait: 0
+editor: 
+  eg: 
+    - some-file.eg
+name: gulp-ractive-foundation
+terminals: 
+  2: []
+
+  3: []
+
+  4: []
+
