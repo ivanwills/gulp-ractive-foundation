@@ -24,6 +24,18 @@ gulp.task('build-components', function () {
 		.pipe(gulp.dest('public/compiled/'));
 });
 
+gulp.task('build-plugins', function () {
+	return gulp.src([
+			'src/plugins/*/manifest.json',
+			'node_modules/ractive-foundation/src/plugins/*/manifest.json'
+		])
+		.pipe(plugins.sourcemaps.init())
+		.pipe(grf.plugin())
+		.pipe(plugins.concat('plugins.js'))
+		.pipe(plugins.sourcemaps.write())
+		.pipe(gulp.dest('public/compiled/'));
+});
+
 gulp.task('build-partials', function () {
 	return gulp.src([
 			'**/*.hbs'
@@ -37,12 +49,14 @@ gulp.task('build-partials', function () {
 		.pipe(gulp.dest('public/compiled/'));
 });
 
-gulp.task('ractive-build-test-templates', function () {
+gulp.task('build-test-templates', function () {
 	return gulp.src([
-			'src/partials/**/*.hbs'
+			'src/*/**/use-cases/*.hbs'
 		])
 		.pipe(plugins.sourcemaps.init())
-		.pipe(grf.template())
+		.pipe(grf.template({
+			prefix: 'Ractive'
+		}))
 		.pipe(plugins.concat('components.js'))
 		.pipe(plugins.sourcemaps.write())
 		.pipe(gulp.dest('public/js'));
@@ -69,6 +83,7 @@ gulp.task('default', function () {
 		'clean',
 		'sass',
 		'build-components',
+		'build-plugins',
 		'build-partials'
 	);
 });
