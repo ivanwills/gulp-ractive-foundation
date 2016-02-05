@@ -5,9 +5,9 @@ var through  = require('through2'),
 	util     = require('./utils.js'),
 	PluginError    = gulputil.PluginError;
 
-const PLUGIN_NAME = 'gulp-ractive-foundation-component';
+const PLUGIN_NAME = 'gulp-ractive-foundation-template';
 
-function componentJs(options) {
+function template(options) {
 	if (!options) {
 		options = {};
 	}
@@ -21,17 +21,22 @@ function componentJs(options) {
 			return callback();
 		}
 
-		util.getComponent(file.history[0], options)
+		console.log(file.history[0]);
+		util.getTemplate(file.history[0], options)
 			.then(function(contents) {
 				file.contents = new Buffer(contents);
 
 				this.push(file);
 
 				callback();
-			}.bind(this));
+			}.bind(this))
+			.catch(function() {
+				console.log(arguments);
+				callback();
+			});
 	});
 
 	return stream;
 }
 
-module.exports = componentJs;
+module.exports = template;
