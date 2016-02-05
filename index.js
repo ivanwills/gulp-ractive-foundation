@@ -1,6 +1,6 @@
-var componentJs = require('./tasks/component.js');
-//var componentScss = require('./tasks/componentScss.js');
+var component = require('./tasks/component.js');
+var template  = require('./tasks/template.js');
 
 var exports;
-exports.componentJs = componentJs;
-//exports.componentScss = componentScss;
+exports.component = component;
+exports.template  = template;
