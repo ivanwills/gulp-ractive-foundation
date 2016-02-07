@@ -62,6 +62,18 @@ gulp.task('build-test-templates', function () {
 		.pipe(gulp.dest('public/js'));
 });
 
+gulp.task('build-documentation', function () {
+	return gulp.src([
+			'src/',
+			'node_modules/ractive-foundation/src/'
+		])
+		.pipe(plugins.sourcemaps.init())
+		.pipe(grf.documentation())
+		.pipe(plugins.concat('plugins.js'))
+		.pipe(plugins.sourcemaps.write())
+		.pipe(gulp.dest('public/compiled/'));
+});
+
 gulp.task('sass', function () {
 
 	return mergeStream(
