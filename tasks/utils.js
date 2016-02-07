@@ -33,6 +33,18 @@ var allGood = function(all) {
 	return contents;
 };
 
+// function to return only good promises (ignoring bad ones)
+var onlyGood = function(all) {
+	var good = [];
+	_.map(all, function(arg) {
+		if (arg.state === 'fulfilled') {
+			good.push(arg.value);
+		}
+	});
+
+	return good;
+};
+
 var parseTemplate = function(contents, options) {
 	contents = Ractive.parse(contents, options);
 	return JSON.stringify(contents);
@@ -133,12 +145,71 @@ var getTemplate = function(file, options) {
 		});
 };
 
+var getManifest;
+var getDocumentation = function(file, options) {
+
+	return getManifest(file, options)
+	.then(function(manifest) {
+		console.log(manifest);
+	});
+};
+
+getManifest = function(file, options) {
+	if (! options.manifests) {
+		options.manifests = [
+			file + path.sep + 'components',
+			file + path.sep + 'plugins',
+		];
+	}
+
+	var list = [];
+	_.map(options.manifests, function (dir) {
+		list.push(readDir(dir)
+			.then(function(files) {
+				var list = [];
+				_.map(files, function(objectDir) {
+					objectDir = dir + path.sep + objectDir;
+					if (fs.statSync(objectDir).isDirectory()) {
+						var objectName = objectDir.replace(new RegExp('^.*' + path.sep), ''),
+							manifest   = objectDir + path.sep + 'manifest.json';
+
+						if (fs.statSync(manifest).isFile()) {
+							list.push(readFile(manifest)
+								.then(function(contents) {
+									var json = JSON.parse(contents);
+									json.name = objectName;
+									json.dir  = objectDir;
+									return json;
+								})
+							);
+						}
+					}
+				});
+
+				return q.allSettled(list)
+					.then(onlyGood);
+			})
+		);
+	});
+
+	return q.allSettled(list)
+		.then(onlyGood)
+		.then(function(allAll) {
+			var manifests = {};
+			_.map(allAll, function(all) {
+				_.map(all, function(manifest) {
+					manifests[manifest.name] = manifest;
+				});
+			});
+			return manifests;
+		});
+};
+
 module.exports = {
-	addObjectName: addObjectName,
-	addName      : addName,
-	allGood      : allGood,
-	getPartials  : getPartials,
-	getComponent : getComponent,
-	getComponents: getComponents,
-	getTemplate  : getTemplate
+	getComponent    : getComponent,
+	getComponents   : getComponents,
+	getDocumentation: getDocumentation,
+	getManifest     : getManifest,
+	getPartials     : getPartials,
+	getTemplate     : getTemplate
 };
