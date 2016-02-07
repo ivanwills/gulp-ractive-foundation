@@ -150,7 +150,7 @@ var getDocumentation = function(file, options) {
 
 	return getManifest(file, options)
 	.then(function(manifest) {
-		console.log(manifest);
+		return '';
 	});
 };
 
@@ -169,20 +169,54 @@ getManifest = function(file, options) {
 				var list = [];
 				_.map(files, function(objectDir) {
 					objectDir = dir + path.sep + objectDir;
-					if (fs.statSync(objectDir).isDirectory()) {
-						var objectName = objectDir.replace(new RegExp('^.*' + path.sep), ''),
-							manifest   = objectDir + path.sep + 'manifest.json';
+					if (! fs.statSync(objectDir).isDirectory()) {
+						return;
+					}
 
-						if (fs.statSync(manifest).isFile()) {
-							list.push(readFile(manifest)
-								.then(function(contents) {
-									var json = JSON.parse(contents);
-									json.name = objectName;
-									json.dir  = objectDir;
-									return json;
-								})
-							);
+					var objectName = objectDir.replace(new RegExp('^.*' + path.sep), ''),
+						manifest   = objectDir + path.sep + 'manifest.json',
+						usecases   = objectDir + path.sep + 'use-cases';
+
+					try {
+						if (! fs.statSync(manifest).isFile()) {
+							return;
 						}
+
+						list.push(readFile(manifest)
+							.then(function(contents) {
+								var json = JSON.parse(contents);
+								json.name = objectName;
+								json.dir  = objectDir;
+
+								return readDir(usecases)
+									.then(function(all) {
+										var list = [];
+										_.map(all, function (file) {
+											if (file.match(/[.]json$/)) {
+												list.push(readFile(usecases + path.sep + file)
+													.then(function (contents) {
+														var json = JSON.parse(contents);
+														json.name = file.replace(/[.]json$/, '');
+														return json;
+													})
+												);
+											}
+										});
+
+										return q.allSettled(list)
+											.then(onlyGood)
+											.then(function(all) {
+												_.map(all, function (usecase) {
+													json.useCases[usecase.name] = usecase;
+												});
+												return json;
+											});
+									});
+							})
+						);
+					}
+					catch(e) {
+						//console.warn('No manifest for ' + objectName + ' (in ' + objectDir + ')');
 					}
 				});
 
