@@ -3,6 +3,7 @@
 var through  = require('through2'),
 	gulputil = require('gulp-util'),
 	util     = require('./utils.js'),
+	_        = require('lodash'),
 	PluginError    = gulputil.PluginError;
 
 const PLUGIN_NAME = 'gulp-ractive-foundation-template';
@@ -20,9 +21,12 @@ function template(options) {
 			this.emit('error', new PluginError(PLUGIN_NAME, 'Streams are not supported!'));
 			return callback();
 		}
+		var subOptions = _.cloneDeep(options);
+		if (! subOptions.base) {
+			subOptions.base = file.base;
+		}
 
-		console.log(file.history[0]);
-		util.getTemplate(file.history[0], options)
+		util.getTemplate(file.history[0], subOptions)
 			.then(function(contents) {
 				file.contents = new Buffer(contents);
 

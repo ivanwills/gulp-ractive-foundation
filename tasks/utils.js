@@ -118,10 +118,10 @@ getComponent = function(file, options) {
 };
 
 var getTemplate = function(file, options) {
-	var objectName = file.replace(process.cwd(), '')
+	var objectName = file.replace(options.base, '')
 		.replace(/\//g, '-')
-		.replace(/^-/, '');
-	console.log(objectName);
+		.replace(/^-/, '')
+		.replace(/[.]hbs$/, '');
 
 	return readFile(file, 'utf-8')
 		.then(function(contents) {
