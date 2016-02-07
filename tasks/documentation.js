@@ -18,7 +18,7 @@ function documentation(options) {
 			return callback();
 		}
 
-		util.documentation(file.history[0], options)
+		util.getDocumentation(file.history[0], options)
 			.then(function(contents) {
 				file.contents = new Buffer(contents);
 
