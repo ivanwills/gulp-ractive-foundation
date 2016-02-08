@@ -7,6 +7,7 @@
     "start": "npm prune && npm install && gulp"
   },
   "dependencies": {
+    "gulp-rename": "^1.2.2",
     "q": "^1.4.1",
     "ractive": "^0.7.3",
     "through2": "~0.6.3",
