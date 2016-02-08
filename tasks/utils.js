@@ -40,6 +40,9 @@ var onlyGood = function(all) {
 		if (arg.state === 'fulfilled') {
 			good.push(arg.value);
 		}
+		else {
+			//console.error(arg);
+		}
 	});
 
 	return good;
@@ -89,7 +92,11 @@ var getComponents = function(componentsDir, objectName, options) {
 					var subOptions = _.clone(options);
 					subOptions.prefix = options.prefix + addObjectName(objectName) + '.components';
 					subOptions.inner = true;
-					list.push(getComponent(component + path.sep + 'manifest.json', subOptions));
+					list.push(getComponent(component + path.sep + 'manifest.json', subOptions)
+						.then(function(js) {
+							return js[0];
+						})
+					);
 				}
 			});
 
@@ -126,7 +133,10 @@ getComponent = function(file, options) {
 	var components = getComponents(componentsDir, objectName, options);
 
 	return q.allSettled([hbs, js, partials, components])
-		.then(allGood);
+		.then(allGood)
+		.then(function(js) {
+			return [js, objectName];
+		});
 };
 
 var getTemplate = function(file, options) {
@@ -150,92 +160,56 @@ var getDocumentation = function(file, options) {
 
 	return getManifest(file, options)
 	.then(function(manifest) {
-		return '';
+		return JSON.stringify(manifest) + '\n';
 	});
 };
 
 getManifest = function(file, options) {
-	if (! options.manifests) {
-		options.manifests = [
-			file + path.sep + 'components',
-			file + path.sep + 'plugins',
-		];
-	}
+	var objectDir  = path.dirname(file),
+		objectName = path.basename(objectDir),
+		usecases   = objectDir + path.sep + 'use-cases';
 
-	var list = [];
-	_.map(options.manifests, function (dir) {
-		list.push(readDir(dir)
-			.then(function(files) {
-				var list = [];
-				_.map(files, function(objectDir) {
-					objectDir = dir + path.sep + objectDir;
-					if (! fs.statSync(objectDir).isDirectory()) {
-						return;
-					}
+	return readFile(file)
+		.then(function(contents) {
+			var json = JSON.parse(contents);
+			json.name = objectName;
+			json.dir  = objectDir;
+			json.useCases = {};
 
-					var objectName = objectDir.replace(new RegExp('^.*' + path.sep), ''),
-						manifest   = objectDir + path.sep + 'manifest.json',
-						usecases   = objectDir + path.sep + 'use-cases';
+			try {
+				if (! fs.statSync(usecases).isDirectory()) {
+					return json;
+				}
 
-					try {
-						if (! fs.statSync(manifest).isFile()) {
-							return;
-						}
+				return readDir(usecases)
+					.then(function(all) {
+						var list = [];
+						_.map(all, function (file) {
+							if (file.match(/[.]json$/)) {
+								list.push(readFile(usecases + path.sep + file)
+									.then(function (contents) {
+										var json = JSON.parse(contents);
+										json.name = file.replace(/[.]json$/, '');
+										return json;
+									})
+								);
+							}
+						});
 
-						list.push(readFile(manifest)
-							.then(function(contents) {
-								var json = JSON.parse(contents);
-								json.name = objectName;
-								json.dir  = objectDir;
+						return q.allSettled(list)
+							.then(onlyGood)
+							.then(function(all) {
+								_.map(all, function (usecase) {
+									json.useCases[usecase.name] = usecase;
+								});
 
-								return readDir(usecases)
-									.then(function(all) {
-										var list = [];
-										_.map(all, function (file) {
-											if (file.match(/[.]json$/)) {
-												list.push(readFile(usecases + path.sep + file)
-													.then(function (contents) {
-														var json = JSON.parse(contents);
-														json.name = file.replace(/[.]json$/, '');
-														return json;
-													})
-												);
-											}
-										});
-
-										return q.allSettled(list)
-											.then(onlyGood)
-											.then(function(all) {
-												_.map(all, function (usecase) {
-													json.useCases[usecase.name] = usecase;
-												});
-												return json;
-											});
-									});
-							})
-						);
-					}
-					catch(e) {
-						//console.warn('No manifest for ' + objectName + ' (in ' + objectDir + ')');
-					}
-				});
-
-				return q.allSettled(list)
-					.then(onlyGood);
-			})
-		);
-	});
-
-	return q.allSettled(list)
-		.then(onlyGood)
-		.then(function(allAll) {
-			var manifests = {};
-			_.map(allAll, function(all) {
-				_.map(all, function(manifest) {
-					manifests[manifest.name] = manifest;
-				});
-			});
-			return manifests;
+								return json;
+							});
+					});
+			}
+			catch (e) {
+				return json;
+			}
 		});
 };
 

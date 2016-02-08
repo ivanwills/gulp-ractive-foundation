@@ -62,15 +62,32 @@ gulp.task('build-test-templates', function () {
 		.pipe(gulp.dest('public/js'));
 });
 
+gulp.task('build-manifest', function () {
+	return gulp.src([
+			'src/components/*/manifest.json',
+			'src/plugins/*/manifest.json',
+			'node_modules/ractive-foundation/src/components/*/manifest.json',
+			'node_modules/ractive-foundation/src/plugins/*/manifest.json'
+		])
+		.pipe(plugins.sourcemaps.init())
+		.pipe(grf.manifest('manifest.json'))
+		.pipe(plugins.concat('manifest.json'))
+		.pipe(plugins.sourcemaps.write())
+		.pipe(gulp.dest('public/compiled/'));
+});
+
 gulp.task('build-documentation', function () {
 	return gulp.src([
 			'src/',
-			'node_modules/ractive-foundation/src/'
 		])
 		.pipe(plugins.sourcemaps.init())
 		.pipe(grf.documentation())
 		.pipe(plugins.concat('plugins.js'))
 		.pipe(plugins.sourcemaps.write())
+		.pipe(plugins.rename(function (path) {
+			path.basename = 'manifests';
+			path.extname  = '.json';
+		}))
 		.pipe(gulp.dest('public/compiled/'));
 });
 
