@@ -1,29 +1,23 @@
 /* global require, module, Buffer */
 
-var through  = require('through2'),
-	gulputil = require('gulp-util'),
-	util     = require('./utils.js'),
-	PluginError    = gulputil.PluginError;
+var through     = require('through2'),
+	gulputil    = require('gulp-util'),
+	util        = require('./utils'),
+	_           = require('lodash'),
+	PluginError = gulputil.PluginError;
 
 const PLUGIN_NAME = 'gulp-ractive-foundation-component';
 
-function componentJs(options) {
-	if (!options) {
-		options = {};
-	}
-	if (!options.prefix) {
-		options.prefix = 'Ractive.components';
-	}
-
+function component(options) {
 	var stream = through.obj(function (file, enc, callback) {
 		if (file.isStream()) {
 			this.emit('error', new PluginError(PLUGIN_NAME, 'Streams are not supported!'));
 			return callback();
 		}
 
-		util.getComponent(file.history[0], options)
+		util.getComponent(file.path, options)
 			.then(function(contents) {
-				file.contents = new Buffer(contents);
+				file.contents = new Buffer(contents[0]);
 
 				this.push(file);
 
@@ -34,4 +28,10 @@ function componentJs(options) {
 	return stream;
 }
 
-module.exports = componentJs;
+module.exports = function(defaults) {
+	return function(options) {
+		options = options ? _.merge(defaults, options) : defaults;
+
+		return component(options);
+	};
+};

@@ -8,7 +8,10 @@ gulp-ractive-foundation aims to provide gulp tools to help build ractive-foundat
 
 	# in your gulpfile.js
 	var gulp = require('gulp');
-	var grf = require('gulp-ractive-foundation');
+	var grf = require('gulp-ractive-foundation')({
+		// global defaults
+		prefix: 'Ractive.components',
+	});
 
 	// Build components
 	gulp.task('component', function () {

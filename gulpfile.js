@@ -1,7 +1,7 @@
 
 var del     = require('del'),
 	gulp    = require('gulp'),
-	grf     = require('./index.js'),
+	grf     = require('./index.js')(),
 	plugins = require('gulp-load-plugins')(),
 	mergeStream = require('merge-stream'),
 	runSequence = require('run-sequence');

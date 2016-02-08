@@ -28,6 +28,9 @@ var allGood = function(all) {
 		if (arg.state === 'fulfilled') {
 			contents = contents + arg.value;
 		}
+		else {
+			//console.error(arg);
+		}
 	});
 
 	return contents;
@@ -114,7 +117,7 @@ getComponent = function(file, options) {
 	var js = readFile(dir + path.sep + objectName + '.js', 'utf-8')
 		.then(function(contents) {
 			contents = contents.replace(/^\s*\/[*]\s*global[^*]*[*]\/(\r?\n)+/, '');
-			return addName(options.prefix, objectName, contents);
+			return addName(options.prefix, objectName, contents) + options.suffix || '';
 		});
 
 	var hbs = readFile(dir + path.sep + objectName + '.hbs', 'utf-8')

@@ -1,18 +1,15 @@
 /* global require, module, Buffer */
 
-var through  = require('through2'),
-	gulputil = require('gulp-util'),
-	util     = require('./utils.js'),
-	path     = require('path'),
-	PluginError    = gulputil.PluginError;
+var through     = require('through2'),
+	gulputil    = require('gulp-util'),
+	util        = require('./utils'),
+	_           = require('lodash'),
+	path        = require('path'),
+	PluginError = gulputil.PluginError;
 
 const PLUGIN_NAME = 'gulp-ractive-foundation-manifest';
 
 function manifest(file, options) {
-	if (!options) {
-		options = {};
-	}
-
 	var manifest;
 	var latestFile;
 	var latestMod;
@@ -25,7 +22,7 @@ function manifest(file, options) {
 		fileName = path.basename(file.path);
 	}
 	else {
-		throw new PluginError('gulp-concat', 'Missing path in file options for gulp-concat');
+		throw new PluginError(PLUGIN_NAME, 'Missing path in file options for ' + PLUGIN_NAME);
 	}
 
 	var bufferManifests = function (file, enc, callback) {
@@ -49,7 +46,7 @@ function manifest(file, options) {
 			manifest = {};
 		}
 
-		util.getManifest(file.history[0], options)
+		util.getManifest(file.path, options)
 			.then(function(contents) {
 				manifest[contents.name] = contents;
 
@@ -87,4 +84,11 @@ function manifest(file, options) {
 	return through.obj(bufferManifests, endStream);
 }
 
-module.exports = manifest;
+module.exports = function(defaults) {
+	return function(file, options) {
+		options = options ? _.merge(defaults, options) : defaults;
+
+		console.log(file);
+		return manifest(file, options);
+	};
+};
