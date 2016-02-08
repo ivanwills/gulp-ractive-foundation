@@ -10,14 +10,50 @@ gulp-ractive-foundation aims to provide gulp tools to help build ractive-foundat
 	var gulp = require('gulp');
 	var grf = require('gulp-ractive-foundation');
 
-	gulp.task('component-js', function () {
+	// Build components
+	gulp.task('component', function () {
 		return gulp.src('src/components/*/manifest.json')
-			.pipe(grf.componentJs)
-			.pipe(gulp.dest('public/js'));
+			.pipe(grf.component())
+			.pipe(gulp.dest('public/compiled'));
 	});
 
-	gulp.task('component-scss', function () {
-		return gulp.src('src/components/*/manifest.json')
-			.pipe(grf.componentScss)
-			.pipe(gulp.dest('public/js'));
+	// Plugins (transitions/decorators/events etc)
+	gulp.task('plugin', function () {
+		return gulp.src('src/plugin/*/manifest.json')
+			.pipe(grf.plugin())
+			.pipe(gulp.dest('public/compiled'));
+	});
+
+	// Templates eg partials
+	gulp.task('partials', function () {
+		return gulp.src('src/partials/**/*.hbs')
+			.pipe(grf.template())
+			.pipe(gulp.dest('public/compiled'));
+	});
+
+	// Manifests (can be used for building menus for documentation)
+	gulp.task('manifests', function () {
+		return gulp.src([
+				'src/plugins/*/manifest.json',
+				'src/components/*/manifest.json'
+			])
+			.pipe(grf.manifest('manifests.json'))
+			.pipe(gulp.dest('public/compiled'));
+	});
+
+	// Documentation for plugins and components
+	gulp.task('manifests', function () {
+		return gulp.src([
+				'src/plugins/*/manifest.json'
+			])
+			.pipe(grf.documentation({
+			}))
+			.pipe(gulp.dest('public/plugins'));
+	});
+	gulp.task('manifests', function () {
+		return gulp.src([
+				'src/components/*/manifest.json'
+			])
+			.pipe(grf.documentation())
+			.pipe(gulp.dest('public/components'));
 	});
