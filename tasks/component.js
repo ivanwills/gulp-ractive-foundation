@@ -30,7 +30,7 @@ function component(options) {
 
 module.exports = function(defaults) {
 	return function(options) {
-		options = options ? _.merge(defaults, options) : defaults;
+		options = options ? _.merge(_.clone(defaults), options) : _.clone(defaults);
 
 		return component(options);
 	};

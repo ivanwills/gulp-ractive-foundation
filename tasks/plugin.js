@@ -20,7 +20,7 @@ function plugin(options) {
 		if (fs.statSync(file.path).isFile()) {
 			var pluginType = JSON.parse(fs.readFileSync(file.path)).plugin;
 			if (pluginType) {
-				options.prefix = 'Ractive.' + pluginType;
+				options.type = pluginType;
 			}
 		}
 		options.suffix = ';';
@@ -43,7 +43,7 @@ function plugin(options) {
 
 module.exports = function(defaults) {
 	return function(options) {
-		options = options ? _.merge(defaults, options) : defaults;
+		options = options ? _.merge(_.clone(defaults), options) : _.clone(defaults);
 
 		return plugin(options);
 	};
