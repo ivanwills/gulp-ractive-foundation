@@ -27,9 +27,7 @@ function plugin(options) {
 
 		util.getComponent(file.path, options)
 			.then(function(contents) {
-				var finder = new RegExp('(?:' + contents[1] + path.sep + ')?[^' + path.sep + ']+$');
-				file.path = file.path.replace(finder , contents[1] + '.js');
-
+				file.path = options.file2object(file);
 				file.contents = new Buffer(contents[0]);
 
 				this.push(file);

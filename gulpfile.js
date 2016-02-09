@@ -42,7 +42,7 @@ gulp.task('build-partials', function () {
 		], { cwd: 'src/partials/' })
 		.pipe(plugins.sourcemaps.init())
 		.pipe(grf.template({
-			prefix: 'Ractive.partials'
+			type: 'partials'
 		}))
 		.pipe(plugins.concat('partials.js'))
 		.pipe(plugins.sourcemaps.write())
@@ -55,11 +55,11 @@ gulp.task('build-test-templates', function () {
 		])
 		.pipe(plugins.sourcemaps.init())
 		.pipe(grf.template({
-			prefix: 'Ractive'
+			type: 'templates'
 		}))
-		.pipe(plugins.concat('components.js'))
+		.pipe(plugins.concat('testTemplates.js'))
 		.pipe(plugins.sourcemaps.write())
-		.pipe(gulp.dest('public/js'));
+		.pipe(gulp.dest('public/compiled'));
 });
 
 gulp.task('build-manifest', function () {
@@ -71,7 +71,6 @@ gulp.task('build-manifest', function () {
 		])
 		.pipe(plugins.sourcemaps.init())
 		.pipe(grf.manifest('manifest.json'))
-		.pipe(plugins.concat('manifest.json'))
 		.pipe(plugins.sourcemaps.write())
 		.pipe(gulp.dest('public/compiled/'));
 });
@@ -107,12 +106,18 @@ gulp.task('sass', function () {
 
 });
 
+gulp.task('build', [
+	'sass',
+	'build-components',
+	'build-plugins',
+	'build-partials',
+	'build-manifest',
+	'build-documentation'
+]);
+
 gulp.task('default', function () {
 	return runSequence(
 		'clean',
-		'sass',
-		'build-components',
-		'build-plugins',
-		'build-partials'
+		'build'
 	);
 });

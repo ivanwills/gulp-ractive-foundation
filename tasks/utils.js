@@ -68,7 +68,7 @@ var getPartials = function(partialsDir, objectName, options) {
 						readFile(partialsDir + path.sep + file, 'utf-8')
 							.then(function(contents) {
 								var text = addName(
-									options.prefix + addObjectName(objectName) + '.partials',
+									options.prefix.partials + addObjectName(objectName) + '.partials',
 									template,
 									parseTemplate(contents, options)
 								) + ';\n';
@@ -93,7 +93,7 @@ var getComponents = function(componentsDir, objectName, options) {
 				var component = componentsDir + path.sep + file;
 				if (fs.statSync(component).isDirectory()) {
 					var subOptions = _.clone(options);
-					subOptions.prefix = options.prefix + addObjectName(objectName) + '.components';
+					subOptions.prefix.components = options.prefix.components + addObjectName(objectName) + '.components';
 					subOptions.inner = true;
 					list.push(getComponent(component + path.sep + 'manifest.json', subOptions)
 						.then(function(js) {
@@ -117,7 +117,7 @@ getComponent = function(file, options) {
 	var js = readFile(dir + path.sep + objectName + '.js', 'utf-8')
 		.then(function(contents) {
 			contents = contents.replace(/^\s*\/[*]\s*global[^*]*[*]\/(\r?\n)+/, '');
-			return addName(options.prefix, objectName, contents) + options.suffix || '';
+			return addName(options.prefix[options.type], objectName, contents) + options.suffix || '';
 		});
 
 	var hbs = readFile(dir + path.sep + objectName + '.hbs', 'utf-8')
@@ -151,7 +151,7 @@ var getTemplate = function(file, options) {
 	return readFile(file, 'utf-8')
 		.then(function(contents) {
 			return addName(
-				options.prefix,
+				options.prefix[options.type],
 				objectName,
 				parseTemplate(contents, options)
 			) + ';\n';

@@ -17,7 +17,16 @@ module.exports = function(options) {
 		options.useCases = 'use-cases';
 	}
 	if (!options.prefix) {
-		options.prefix = 'Ractive.components';
+		options.prefix = {
+			components:  'Ractive.components',
+			decorators:  'Ractive.decorators',
+			partials:    'Ractive.partials',
+			templates:   'Ractive.defaults.templates',
+			transitions: 'Ractive.transitions',
+		};
+	}
+	if (!options.type) {
+		options.type = 'components';
 	}
 	if (typeof options.file2object !== 'function') {
 		options.file2object = function (file) {
