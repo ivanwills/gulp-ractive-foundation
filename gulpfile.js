@@ -77,17 +77,15 @@ gulp.task('build-manifest', function () {
 
 gulp.task('build-documentation', function () {
 	return gulp.src([
-			'src/',
+			'src/components/*/manifest.json',
+			'src/plugins/*/manifest.json',
+			'node_modules/ractive-foundation/src/components/*/manifest.json',
+			'node_modules/ractive-foundation/src/plugins/*/manifest.json'
 		])
 		.pipe(plugins.sourcemaps.init())
 		.pipe(grf.documentation())
-		.pipe(plugins.concat('plugins.js'))
 		.pipe(plugins.sourcemaps.write())
-		.pipe(plugins.rename(function (path) {
-			path.basename = 'manifests';
-			path.extname  = '.json';
-		}))
-		.pipe(gulp.dest('public/compiled/'));
+		.pipe(gulp.dest('public/'));
 });
 
 gulp.task('sass', function () {
