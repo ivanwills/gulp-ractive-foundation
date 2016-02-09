@@ -27,7 +27,7 @@ function plugin(options) {
 
 		util.getComponent(file.path, options)
 			.then(function(contents) {
-				file.path = file.base + options.file2object(file) + '.js';
+				file.path = file.base + options.file2object(file, options) + '.js';
 				file.contents = new Buffer(contents[0]);
 
 				this.push(file);
