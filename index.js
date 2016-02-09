@@ -33,8 +33,8 @@ module.exports = function(options) {
 			file = typeof file === 'string' ? file : file.path;
 			var parts = file.split(path.sep);
 
-			// remove the file name form parts
 			try {
+				// remove the file name form parts
 				if (fs.statSync(file).isFile()) {
 					parts.pop();
 				}
@@ -42,7 +42,7 @@ module.exports = function(options) {
 			catch (e) {
 			}
 
-			// get the direcory name
+			// get the directory name
 			var dir  = parts.pop();
 
 			// if the directory is a use cases directory
@@ -57,12 +57,13 @@ module.exports = function(options) {
 	}
 
 	// initialise the components
-	var object = {};
-	object.component     = component(options);
-	object.template      = template(options);
-	object.plugin        = plugin(options);
-	object.manifest      = manifest(options);
-	object.documentation = documentation(options);
+	var object = {
+		component    : component(options),
+		template     : template(options),
+		plugin       : plugin(options),
+		manifest     : manifest(options),
+		documentation: documentation(options)
+	};
 
 	return object;
 };
