@@ -17,6 +17,7 @@ function documentation(options) {
 
 		util.getDocumentation(file.path, options)
 			.then(function(contents) {
+				file.path = file.base + options.file2object(file) + '.js';
 				file.contents = new Buffer(contents);
 
 				this.push(file);
