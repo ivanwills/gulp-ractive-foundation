@@ -9,7 +9,7 @@ var through     = require('through2'),
 const PLUGIN_NAME = 'gulp-ractive-foundation-template';
 
 function template(options) {
-	var stream = through.obj(function (file, enc, callback) {
+	return through.obj(function (file, enc, callback) {
 		if (file.isStream()) {
 			this.emit('error', new PluginError(PLUGIN_NAME, 'Streams are not supported!'));
 			return callback();
@@ -32,8 +32,6 @@ function template(options) {
 				callback();
 			});
 	});
-
-	return stream;
 }
 
 module.exports = function(defaults) {
