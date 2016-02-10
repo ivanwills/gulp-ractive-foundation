@@ -10,11 +10,13 @@ var component     = require('./tasks/component'),
 	path          = require('path');
 
 var defaults = {
-	useCases:       'use-cases',
-	type:           'components',
-	buildTemplates: 'src/buildTemplates',
-	buildPartials:  'src/buildPartials',
-	prefix:          {
+	useCases:         'use-cases',
+	type:             'components',
+	buildTemplates:   'src/buildTemplates',
+	buildPartials:    'src/buildPartials',
+	delimiters:       ['{{', '}}'],
+	tripleDelimiters: ['{{', '}}'],
+	prefix: {
 		components:  'Ractive.components',
 		decorators:  'Ractive.decorators',
 		partials:    'Ractive.partials',
