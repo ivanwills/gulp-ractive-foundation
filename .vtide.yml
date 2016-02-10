@@ -1,16 +1,33 @@
---- 
-count: 4
-default: 
+---
+count: 6
+default:
   restart: 0
   wait: 0
-editor: 
-  eg: 
-    - some-file.eg
+editor:
+  files:
+    base:
+      - index.js
+      - gulpfile.js
+      - node_modules/ractive-foundation/gulpfile.js
+      - ../beta/gulpfile.j
+    utils:
+      - tasks/utils.js
+      - node_modules/ractive-foundation/tasks/renderDocumentation.js
+    tasks:
+      - tasks/component.js
+      - tasks/documentation.js
+      - tasks/manifest.js
+      - tasks/plugin.js
+      - tasks/template.js
+
 name: gulp-ractive-foundation
-terminals: 
-  2: []
+terminals:
+  2:
+    edit: base
 
-  3: []
+  3:
+    edit: utils
 
-  4: []
+  4:
+    edit: tasks
 
