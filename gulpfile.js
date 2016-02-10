@@ -75,17 +75,28 @@ gulp.task('build-manifest', function () {
 		.pipe(gulp.dest('public/compiled/'));
 });
 
-gulp.task('build-documentation', function () {
+gulp.task('build-documentation', ['build-documentation-components', 'build-documentation-plugins']);
+gulp.task('build-documentation-components', function () {
 	return gulp.src([
 			'src/components/*/manifest.json',
-			'src/plugins/*/manifest.json',
 			'node_modules/ractive-foundation/src/components/*/manifest.json',
+		])
+		.pipe(grf.documentation({
+			partials: 'src/',
+			template: 'src/component.html'
+		}))
+		.pipe(gulp.dest('public/components'));
+});
+gulp.task('build-documentation-plugins', function () {
+	return gulp.src([
+			'src/plugins/*/manifest.json',
 			'node_modules/ractive-foundation/src/plugins/*/manifest.json'
 		])
-		.pipe(plugins.sourcemaps.init())
-		.pipe(grf.documentation())
-		.pipe(plugins.sourcemaps.write())
-		.pipe(gulp.dest('public/'));
+		.pipe(grf.documentation({
+			partials: 'src/',
+			template: 'src/component.html'
+		}))
+		.pipe(gulp.dest('public/plugins'));
 });
 
 gulp.task('sass', function () {
