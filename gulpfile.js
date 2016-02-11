@@ -93,7 +93,7 @@ gulp.task('build-documentation-plugins', function () {
 			'node_modules/ractive-foundation/src/plugins/*/manifest.json'
 		])
 		.pipe(grf.documentation({
-			partials: 'src/',
+			partials: 'src',
 			template: 'src/component.html'
 		}))
 		.pipe(gulp.dest('public/plugins'));

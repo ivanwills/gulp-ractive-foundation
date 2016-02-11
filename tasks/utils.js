@@ -5,9 +5,12 @@ var Ractive  = require('ractive'),
 	q        = require('q'),
 	path     = require('path'),
 	_        = require('lodash'),
+	Ractive  = require('ractive'),
 	//applySourceMap = require('vinyl-sourcemaps-apply'),
 	readFile = q.nfbind(fs.readFile),
 	readDir = q.nfbind(fs.readdir);
+
+Ractive.DEBUG = false;
 
 // returns the simples way to add "name" to an object syntactically
 // eg test  => .test
@@ -52,7 +55,10 @@ var onlyGood = function(all) {
 };
 
 var parseTemplate = function(contents, options) {
-	contents = Ractive.parse(contents, options);
+	var ractive = ( options && options.ractive ) || Ractive;
+	console.log(typeof ractive.parse);
+	contents = ractive.parse(contents);
+	console.log(typeof contents);
 	return JSON.stringify(contents);
 };
 
@@ -158,13 +164,58 @@ var getTemplate = function(file, options) {
 		});
 };
 
+var getTemplates = function(dir, options) {
+	return readDir(dir)
+		.then(function(files) {
+			var list = [];
+			files.map(function(file) {
+				var base = file.replace(/[.]\w+$/, '');
+				file = dir + path.sep + file;
+				if (fs.statSync(file).isFile()) {
+					list.push(readFile(file)
+						.then(function (contents) {
+							console.log(base, file);
+							return [base, parseTemplate(contents)];
+						})
+					);
+				}
+			});
+
+			return q.allSettled(list)
+				.then(onlyGood)
+				.then(function(all) {
+					var templates = {};
+					_.map(all, function (template) {
+						console.log(template[0]);
+						templates[template[0]] = template[1];
+					});
+
+						console.log(templates);
+					return templates;
+				});
+		})
+		.catch(function(e) {
+			console.log(e);
+		});
+};
+
 var getManifest;
 var getDocumentation = function(file, options) {
 
 	return getManifest(file, options)
-	.then(function(manifest) {
-		return JSON.stringify(manifest) + '\n';
-	});
+		.then(function(manifest) {
+			return options.ractive.then(function(Ractive) {
+				// now have the object who's documentation we want to generate's manifest can start building.
+				Ractive.data = {
+					object: manifest,
+				};
+				console.log('doc done', file);
+				return Ractive.toHTML();
+			})
+			.catch(function(e) {
+				console.log(e);
+			});
+		});
 };
 
 getManifest = function(file, options) {
@@ -222,5 +273,6 @@ module.exports = {
 	getDocumentation: getDocumentation,
 	getManifest     : getManifest,
 	getPartials     : getPartials,
+	getTemplates    : getTemplates,
 	getTemplate     : getTemplate
 };
