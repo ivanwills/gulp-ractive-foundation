@@ -2,17 +2,19 @@
 count: 6
 default:
   restart: 0
-  wait: 0
+  wait: 1
 editor:
   files:
     base:
       - index.js
       - gulpfile.js
       - node_modules/ractive-foundation/gulpfile.js
-      - ../beta/gulpfile.j
+      - ../beta/gulpfile.js
     utils:
       - tasks/utils.js
-      - node_modules/ractive-foundation/tasks/renderDocumentation.js
+      - node_modules/ractive-foundation/tasks/rfCucumber.js
+      - node_modules/ractive-foundation/tasks/seleniumServer.js
+      #- node_modules/ractive-foundation/tasks/renderDocumentation.js
     tasks:
       - tasks/component.js
       - tasks/documentation.js
