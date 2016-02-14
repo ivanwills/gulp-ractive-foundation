@@ -105,6 +105,9 @@ gulp.task('bdd', function (callback) {
 		killed    = false;
 	return gulp.src([
 			'src/components/*/*.feature',
+			'src/plugins/*/*.feature',
+			'node_modules/ractive-foundation/src/components/*/*.feature',
+			'node_modules/ractive-foundation/src/plugins/*/*.feature'
 		])
 		.pipe(grf.bdd({
 			selServer: selServer.init(),
