@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "ally": "^0.2.13",
+    "cucumber": "~0.4.8",
     "del": "^2.0.2",
     "express": "^4.13.3",
     "foundation-sites": "git+https://github.com/zurb/bower-foundation.git#5.5.3",

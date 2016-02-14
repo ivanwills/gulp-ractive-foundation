@@ -6,6 +6,8 @@ var Ractive  = require('ractive'),
 	path     = require('path'),
 	_        = require('lodash'),
 	Ractive  = require('ractive'),
+	Cucumber = require('cucumber'),
+	glob     = require('simple-glob'),
 	//applySourceMap = require('vinyl-sourcemaps-apply'),
 	readFile = q.nfbind(fs.readFile),
 	readDir = q.nfbind(fs.readdir);
@@ -267,6 +269,26 @@ getManifest = function(file, options) {
 		});
 };
 
+var runBdd = function(file, options) {
+	var step = file.replace(/[.]feature$/, '.step.js'),
+		args = [
+		'node',
+		'cucumber-js',
+		'-f', options.pretty,
+		'-r', step,
+		file
+	];
+	if (options.tags) {
+		args.push('--tags', options.tags.join(','));
+	}
+	return Cucumber.Cli(args).run(function(succeeded) {
+		if (!succeeded) {
+			throw new Error('Cucumber tests failed!');
+		}
+		return;
+	});
+};
+
 module.exports = {
 	getComponent    : getComponent,
 	getComponents   : getComponents,
@@ -274,5 +296,6 @@ module.exports = {
 	getManifest     : getManifest,
 	getPartials     : getPartials,
 	getTemplates    : getTemplates,
-	getTemplate     : getTemplate
+	getTemplate     : getTemplate,
+	runBdd          : runBdd
 };

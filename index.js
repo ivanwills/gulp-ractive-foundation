@@ -5,6 +5,7 @@ var component     = require('./tasks/component'),
 	plugin        = require('./tasks/plugin'),
 	manifest      = require('./tasks/manifest'),
 	documentation = require('./tasks/documentation'),
+	bdd           = require('./tasks/bdd'),
 	_             = require('lodash'),
 	fs            = require('fs'),
 	path          = require('path');
@@ -16,6 +17,7 @@ var defaults = {
 	buildPartials:    'src/buildPartials',
 	delimiters:       ['{{', '}}'],
 	tripleDelimiters: ['{{', '}}'],
+	format:           'pretty',
 	prefix: {
 		components:  'Ractive.components',
 		decorators:  'Ractive.decorators',
@@ -60,7 +62,8 @@ module.exports = function(options) {
 		template     : template(options),
 		plugin       : plugin(options),
 		manifest     : manifest(options),
-		documentation: documentation(options)
+		documentation: documentation(options),
+		bdd          : bdd(options)
 	};
 
 	return object;

@@ -3,8 +3,9 @@ var del     = require('del'),
 	gulp    = require('gulp'),
 	grf     = require('./index.js')(),
 	plugins = require('gulp-load-plugins')(),
-	mergeStream = require('merge-stream'),
-	runSequence = require('run-sequence');
+	seleniumServer = require('./node_modules/ractive-foundation/tasks/seleniumServer'),
+	mergeStream    = require('merge-stream'),
+	runSequence    = require('run-sequence');
 
 gulp.task('clean', function (callback) {
 	return del([
@@ -97,6 +98,33 @@ gulp.task('build-documentation-plugins', function () {
 			template: 'src/component.html'
 		}))
 		.pipe(gulp.dest('public/plugins'));
+});
+
+gulp.task('bdd', function (callback) {
+	var selServer = seleniumServer(),
+		killed    = false;
+	return gulp.src([
+			'src/components/*/*.feature',
+		])
+		.pipe(grf.bdd({
+			selServer: selServer.init(),
+			steps    : [
+				'src/components/*/*.steps.js',
+				'src/plugins/*/*.steps.js',
+				'node_modules/ractive-foundation/src/components/*/*.steps.js',
+				'node_modules/ractive-foundation/src/plugins/*/*.steps.js'
+			]
+		}))
+		.on('end', function() {
+			if (!killed) {
+				killed = true;
+				var done = function () {};
+				selServer
+					.killServer()
+					.then(done)
+					.catch(done);
+			}
+		});
 });
 
 gulp.task('sass', function () {
