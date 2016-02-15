@@ -270,23 +270,25 @@ getManifest = function(file, options) {
 };
 
 var runBdd = function(file, options) {
-	var step = file.replace(/[.]feature$/, '.step.js'),
+	var step = file.replace(/[.]feature$/, '.steps.js'),
 		args = [
 		'node',
 		'cucumber-js',
-		'-f', options.pretty,
+		'-f', options.format,
 		'-r', step,
 		file
 	];
 	if (options.tags) {
 		args.push('--tags', options.tags.join(','));
 	}
-	return Cucumber.Cli(args).run(function(succeeded) {
+	var cli = Cucumber.Cli(args).run(function(succeeded) {
+		console.log('ran ', args, arguments);
 		if (!succeeded) {
 			throw new Error('Cucumber tests failed!');
 		}
 		return;
 	});
+	return cli;
 };
 
 module.exports = {
