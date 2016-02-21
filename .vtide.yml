@@ -3,6 +3,19 @@ count: 6
 default:
   restart: 0
   wait: 1
+  env:
+    MANPATH: /home/ivan/.nvm/versions/v0.12.7/share/man:/home/ivan/.nvm/versions/v0.12.7/share/man:/usr/local/man:/usr/local/share/man:/usr/share/man:/home/ivan/.rvm/man
+    NVM_BIN: /home/ivan/.nvm/versions/v0.12.7/bin
+    NVM_PATH: /home/ivan/.nvm/versions/v0.12.7/lib/node
+    PATH: /home/ivan/.nvm/versions/v0.12.7/bin:./node_modules/.bin:$PATH
+name: gulp-ractive-foundation
+terminals:
+  2:
+    edit: base
+  3:
+    edit: utils
+  4:
+    edit: tasks
 editor:
   files:
     base:
@@ -21,15 +34,4 @@ editor:
       - tasks/manifest.js
       - tasks/plugin.js
       - tasks/template.js
-
-name: gulp-ractive-foundation
-terminals:
-  2:
-    edit: base
-
-  3:
-    edit: utils
-
-  4:
-    edit: tasks
 
