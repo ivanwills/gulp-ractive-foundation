@@ -1,13 +1,13 @@
 ---
 count: 6
 default:
+  env:
+    MANPATH: /home/ivan/.nvm/versions/v4.2.6/share/man:/home/ivan/.nvm/versions/v4.2.6/share/man:/usr/local/man:/usr/local/share/man:/usr/share/man:/home/ivan/.rvm/man
+    NVM_BIN: /home/ivan/.nvm/versions/v4.2.6/bin
+    NVM_PATH: /home/ivan/.nvm/versions/v4.2.6/lib/node
+    PATH: /home/ivan/.nvm/versions/v4.2.6/bin:./node_modules/.bin:$PATH
   restart: 0
   wait: 1
-  env:
-    MANPATH: /home/ivan/.nvm/versions/v0.12.7/share/man:/home/ivan/.nvm/versions/v0.12.7/share/man:/usr/local/man:/usr/local/share/man:/usr/share/man:/home/ivan/.rvm/man
-    NVM_BIN: /home/ivan/.nvm/versions/v0.12.7/bin
-    NVM_PATH: /home/ivan/.nvm/versions/v0.12.7/lib/node
-    PATH: /home/ivan/.nvm/versions/v0.12.7/bin:./node_modules/.bin:$PATH
 name: gulp-ractive-foundation
 terminals:
   2:
@@ -17,6 +17,20 @@ terminals:
   4:
     edit: tasks
 editor:
+  helper: |
+    sub {
+      my ($self, $group) = @_;
+      if ($group =~ /^ux-/) {
+        my ($component, $type) = $group =~ /^(ux-.*?)(?:-(all|test|docs))?$/;
+        my $dir = "src/components/$component";
+        return !$type     ? ("$dir/$component.js", "$dir/$component.hbs", "$dir/$component*.scss")
+          : $type eq 'all'  ? ("$dir/*.*", "$dir/use-cases/*")
+          : $type eq 'test' ? ("$dir/$component.feature", "$dir/$component.step.js", "$dir/use-cases/*")
+          : $type eq 'docs' ? ("$dir/README.md", "$dir/manifest.json")
+          :                   die "Unknown type '$type'!\n";
+      }
+      return ();
+    }
   files:
     base:
       - index.js
