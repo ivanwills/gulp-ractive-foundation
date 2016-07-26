@@ -1,5 +1,5 @@
 ---
-count: 6
+count: 10
 default:
   env:
     MANPATH: /home/ivan/.nvm/versions/v4.2.6/share/man:/home/ivan/.nvm/versions/v4.2.6/share/man:/usr/local/man:/usr/local/share/man:/usr/share/man:/home/ivan/.rvm/man

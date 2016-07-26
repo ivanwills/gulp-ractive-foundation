@@ -11,7 +11,12 @@ var component     = require('./gulp/component'),
 	path          = require('path');
 
 var defaults = {
-	useCases:         'use-cases',
+	files: {
+		useCases:   'use-cases',
+		components: '{{component}}.js',
+		templates:  '{{component}}.hbs',
+		partials:   'partials/*.hbs',
+	},
 	type:             'components',
 	buildTemplates:   'src/buildTemplates',
 	buildPartials:    'src/buildPartials',
