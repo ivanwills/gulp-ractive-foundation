@@ -1,11 +1,11 @@
 /* global require, module */
 
-var component     = require('./tasks/component'),
-	template      = require('./tasks/template'),
-	plugin        = require('./tasks/plugin'),
-	manifest      = require('./tasks/manifest'),
-	documentation = require('./tasks/documentation'),
-	bdd           = require('./tasks/bdd'),
+var component     = require('./gulp/component'),
+	template      = require('./gulp/template'),
+	plugin        = require('./gulp/plugin'),
+	manifest      = require('./gulp/manifest'),
+	documentation = require('./gulp/documentation'),
+	bdd           = require('./gulp/bdd'),
 	_             = require('lodash'),
 	fs            = require('fs'),
 	path          = require('path');
@@ -16,7 +16,7 @@ var defaults = {
 	buildTemplates:   'src/buildTemplates',
 	buildPartials:    'src/buildPartials',
 	delimiters:       ['{{', '}}'],
-	tripleDelimiters: ['{{', '}}'],
+	tripleDelimiters: ['{{{', '}}}'],
 	format:           'pretty',
 	prefix: {
 		components:  'Ractive.components',

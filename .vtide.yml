@@ -15,7 +15,7 @@ terminals:
   3:
     edit: utils
   4:
-    edit: tasks
+    edit: gulp
 editor:
   helper: |
     sub {
@@ -38,14 +38,14 @@ editor:
       - node_modules/ractive-foundation/gulpfile.js
       - ../beta/gulpfile.js
     utils:
-      - tasks/utils.js
+      - gulp/utils.js
       - node_modules/ractive-foundation/tasks/rfCucumber.js
       - node_modules/ractive-foundation/tasks/seleniumServer.js
       #- node_modules/ractive-foundation/tasks/renderDocumentation.js
-    tasks:
-      - tasks/component.js
-      - tasks/documentation.js
-      - tasks/manifest.js
-      - tasks/plugin.js
-      - tasks/template.js
+    gulp:
+      - gulp/component.js
+      - gulp/documentation.js
+      - gulp/manifest.js
+      - gulp/plugin.js
+      - gulp/template.js
 
