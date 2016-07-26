@@ -22,9 +22,9 @@
   },
   "devDependencies": {
     "ally": "^0.2.13",
-    "cucumber": "~0.4.8",
+    "cucumber": "~0.4.9",
     "del": "^2.0.2",
-    "express": "^4.13.3",
+    "express": "^4.14.0",
     "foundation-sites": "git+https://github.com/zurb/bower-foundation.git#5.5.3",
     "gulp": "^3.9.0",
     "gulp-batch": "^1.0.5",
@@ -56,6 +56,6 @@
     "run-sequence": "^1.1.4",
     "simple-glob": "^0.1.0",
     "superagent": "0.21.0",
-    "webdriverio": "^3.3.0"
+    "webdriverio": "^3.4.0"
   }
 }
