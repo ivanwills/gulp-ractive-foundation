@@ -20,6 +20,7 @@ gulp.task('build-components', function () {
 		])
 		.pipe(plugins.sourcemaps.init())
 		.pipe(grf.component())
+		.pipe(gulp.dest('public/components/'))
 		.pipe(plugins.concat('components.js'))
 		.pipe(plugins.sourcemaps.write())
 		.pipe(gulp.dest('public/compiled/'));
