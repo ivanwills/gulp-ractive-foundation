@@ -1,7 +1,10 @@
 {
   "name": "gulp-ractive-foundation",
-  "version": "0.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "Gulp plugin for building ractive components for ractive-foundation",
+  "engines": {
+      "node": ">=4.2.0"
+  },
   "scripts": {
     "test": "npm prune && npm install && gulp test",
     "start": "npm prune && npm install && gulp"
