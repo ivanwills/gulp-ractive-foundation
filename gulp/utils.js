@@ -100,7 +100,7 @@ var getComponents = function(componentsDir, objectName, options) {
 			_.map(files, function(file) {
 				var component = componentsDir + path.sep + file;
 				if (fs.statSync(component).isDirectory()) {
-					var subOptions = _.clone(options);
+					var subOptions = _.clone(options, 1);
 					subOptions.prefix.components = options.prefix.components + addObjectName(objectName) + '.components';
 					subOptions.inner = true;
 					list.push(getComponent(component + path.sep + 'manifest.json', subOptions)
