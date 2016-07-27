@@ -147,8 +147,50 @@ gulp.task('sass', function () {
 
 });
 
+gulp.task('copy-vendors', function () {
+
+	return mergeStream(
+
+		gulp.src([
+			'./node_modules/ractive/ractive.js',
+			'./node_modules/ractive/ractive.min.js',
+			'./node_modules/ractive/ractive.min.js.map',
+			'./node_modules/hammerjs/hammer.min.js',
+			'./node_modules/ractive-touch/index.js',
+			'./node_modules/ractive-events-tap/dist/ractive-events-tap.js',
+			'./node_modules/jquery/dist/jquery.min.js',
+			'./node_modules/jquery/dist/jquery.min.map',
+			'./node_modules/lodash/lodash.min.js',
+			'./node_modules/superagent/superagent.js',
+			'./node_modules/page/page.js',
+			'./node_modules/foundation-sites/js/vendor/modernizr.js',
+			'./node_modules/lodash-compat/index.js',
+			'./node_modules/hljs-cdn-release/build/highlight.min.js'
+		])
+		.pipe(plugins.copy('./public/js', { prefix: 1 })),
+
+		gulp.src([
+			'./node_modules/hljs-cdn-release/build/styles/github.min.css'
+		])
+		.pipe(plugins.copy('./public/css', { prefix: 1 })),
+
+		// Our own project files.
+		gulp.src('./src/route.js')
+		.pipe(gulp.dest('./public/js')),
+
+		// Some reference images, taken from Zurb for demo'ing, but not part of the real source.
+		gulp.src([
+			'./src/assets/images/**/*'
+		])
+		.pipe(gulp.dest('public/images/'))
+
+	);
+
+});
+
 gulp.task('build', [
 	'sass',
+	'copy-vendors',
 	'build-components',
 	'build-plugins',
 	'build-partials',
