@@ -20,13 +20,16 @@ editor:
   helper: |
     sub {
       my ($self, $group) = @_;
-      my ($component, $type) = $group =~ /^(\w+-.*?)(?:-(all|test|docs))?$/;
-      my $dir = "src/components/$component";
-      return !$type       ? ("$dir/$component.js", "$dir/$component.hbs", "$dir/$component*.scss")
-        : $type eq 'all'  ? ($component, "$component-test", "$component-docs")
-        : $type eq 'test' ? ("$dir/$component.feature", "$dir/$component.steps.js", "$dir/use-cases/*")
-        : $type eq 'docs' ? ("$dir/README.md", "$dir/manifest.json")
-        :                   die "Unknown type '$type'!\n";
+      if ($group =~ /^(?:ux|gulp)-\w/) {
+        my ($component, $type) = $group =~ /^((?:ux|gulp)-.+)(?:-(all|test|docs))?$/;
+        my $dir = "src/components/$component";
+        return !$type       ? ("$dir/$component.js", "$dir/$component.hbs", "$dir/$component*.scss")
+          : $type eq 'all'  ? ($component, "$component-test", "$component-docs")
+          : $type eq 'test' ? ("$dir/$component.feature", "$dir/$component.steps.js", "$dir/use-cases/*")
+          : $type eq 'docs' ? ("$dir/README.md", "$dir/manifest.json")
+          :                   die "Unknown type '$type'!\n";
+      }
+      return ();
     }
   helper_autocomplete: |
     sub {
