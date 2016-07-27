@@ -125,7 +125,7 @@ getComponent = function(file, options) {
 	var js = readFile(dir + path.sep + objectName + '.js', 'utf-8')
 		.then(function(contents) {
 			contents = contents.replace(/^\s*\/[*]\s*global[^*]*[*]\/(\r?\n)+/, '');
-			return addName(options.prefix[options.type], objectName, contents) + options.suffix || '';
+			return addName(options.prefix[options.type], objectName, contents) + (options.suffix || '');
 		});
 
 	var hbs = readFile(dir + path.sep + objectName + '.hbs', 'utf-8')
