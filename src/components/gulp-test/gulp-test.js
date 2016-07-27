@@ -1,5 +1,5 @@
-/* global Ractive */
+/* global Ractive, templates */
 Ractive.extend({
-	template: Ractive.defaults.templates['gulp-test'],
+	template: templates['gulp-test'],
 	isolated: true
 });

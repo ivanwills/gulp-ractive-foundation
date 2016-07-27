@@ -12,7 +12,7 @@ var component     = require('./gulp/component'),
 
 var defaults = {
 	files: {
-		useCases:   'use-cases',
+		useCases:   'use-cases/*.json',
 		components: '{{component}}.js',
 		templates:  '{{component}}.hbs',
 		partials:   'partials/*.hbs',
@@ -26,8 +26,8 @@ var defaults = {
 	prefix: {
 		components:  'Ractive.components',
 		decorators:  'Ractive.decorators',
-		partials:    'Ractive.partials',
-		templates:   'Ractive.defaults.templates',
+		partials:    'Ractive.components',
+		templates:   'var templates; if (!templates) templates=[];\ntemplates',
 		transitions: 'Ractive.transitions',
 	},
 	file2object: function (file, options) {
