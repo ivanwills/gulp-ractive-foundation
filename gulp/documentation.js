@@ -47,8 +47,6 @@ function documentation(options) {
 
 module.exports = function(defaults) {
 	return function(options) {
-		options = options ? _.merge(_.clone(defaults), options) : _.clone(defaults);
-
-		return documentation(options);
+		return documentation(_.assign({}, defaults, options));
 	};
 };
