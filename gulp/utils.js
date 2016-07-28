@@ -23,14 +23,28 @@ var addObjectName = function(name) {
 // returns the full object name
 //  eg Ractive.components['ux-thing']
 var objectName = function(options, name) {
-	console.log(options.prefix);
-	console.log( options.prefix.parent + '.' + options.prefix[options.type] + addObjectName(name));
 	return options.prefix.parent + '.' + options.prefix[options.type] + addObjectName(name);
 };
 
 // return JS code to add the "contents" to "name" of object "prefix"
 var addName = function(options, name, contents) {
 	return objectName(options, name) + ' = ' + contents;
+};
+
+var saftyPrefix = function(options, type) {
+	var prefixParts = options.prefix[type].split(/[.]/);
+	var currPrefix  = prefixParts.shift();
+	var out         = 'if (!' + options.prefix.parent + '.' + currPrefix + ') {\n' +
+		'\t' + options.prefix.parent + '.' + currPrefix + ' = {};\n' +
+		'}\n';
+
+	for (var i in prefixParts) {
+		currPrefix += '.' + prefixParts[i];
+		out += 'if (!' + options.prefix.parent + '.' + currPrefix + ') {\n' +
+			'\t' + options.prefix.parent + '.' + currPrefix + ' = {};\n' +
+			'}\n';
+	}
+	return out;
 };
 
 // function to combine all good promises (ignoring bad ones)
@@ -139,7 +153,8 @@ getComponent = function(file, options) {
 		.then(function(contents) {
 			var templateOptions = _.clone(options, 1);
 			templateOptions.type = 'templates';
-			return addName(
+			return saftyPrefix(options, 'templates') +
+				addName(
 				templateOptions,
 				name,
 				parseTemplate(contents, options)
