@@ -4,7 +4,7 @@
  * steps.call(this);
  *
  */
-var _ = require('lodash-compat');
+var _ = require('lodash');
 console.log('before helper');
 var helper = require('../../node_modules/ractive-foundation/src/support/testHelpers');
 console.log('before steps');

@@ -2,10 +2,13 @@
 var del     = require('del'),
 	gulp    = require('gulp'),
 	grf     = require('./index.js')(),
-	plugins = require('gulp-load-plugins')(),
 	seleniumServer = require('./node_modules/ractive-foundation/tasks/seleniumServer'),
 	mergeStream    = require('merge-stream'),
-	runSequence    = require('run-sequence');
+	runSequence    = require('run-sequence'),
+	sass = require('gulp-sass'),
+	copy = require('gulp-copy'),
+	sourcemaps = require('gulp-sourcemaps'),
+	concat = require('gulp-concat');
 
 gulp.task('clean', function (callback) {
 	return del([
@@ -18,11 +21,11 @@ gulp.task('build-components', function () {
 			'src/components/*/manifest.json',
 			'node_modules/ractive-foundation/src/components/*/manifest.json'
 		])
-		.pipe(plugins.sourcemaps.init())
+		.pipe(sourcemaps.init())
 		.pipe(grf.component())
 		.pipe(gulp.dest('public/components/'))
-		.pipe(plugins.concat('components.js'))
-		.pipe(plugins.sourcemaps.write())
+		.pipe(concat('components.js'))
+		.pipe(sourcemaps.write())
 		.pipe(gulp.dest('public/compiled/'));
 });
 
@@ -31,10 +34,10 @@ gulp.task('build-plugins', function () {
 			'src/plugins/*/manifest.json',
 			'node_modules/ractive-foundation/src/plugins/*/manifest.json'
 		])
-		.pipe(plugins.sourcemaps.init())
+		.pipe(sourcemaps.init())
 		.pipe(grf.plugin())
-		.pipe(plugins.concat('plugins.js'))
-		.pipe(plugins.sourcemaps.write())
+		.pipe(concat('js'))
+		.pipe(sourcemaps.write())
 		.pipe(gulp.dest('public/compiled/'));
 });
 
@@ -42,12 +45,12 @@ gulp.task('build-partials', function () {
 	return gulp.src([
 			'**/*.hbs'
 		], { cwd: 'src/partials/' })
-		.pipe(plugins.sourcemaps.init())
+		.pipe(sourcemaps.init())
 		.pipe(grf.template({
 			type: 'partials'
 		}))
-		.pipe(plugins.concat('partials.js'))
-		.pipe(plugins.sourcemaps.write())
+		.pipe(concat('partials.js'))
+		.pipe(sourcemaps.write())
 		.pipe(gulp.dest('public/compiled/'));
 });
 
@@ -55,12 +58,12 @@ gulp.task('build-test-templates', function () {
 	return gulp.src([
 			'src/*/**/use-cases/*.hbs'
 		])
-		.pipe(plugins.sourcemaps.init())
+		.pipe(sourcemaps.init())
 		.pipe(grf.template({
 			type: 'templates'
 		}))
-		.pipe(plugins.concat('testTemplates.js'))
-		.pipe(plugins.sourcemaps.write())
+		.pipe(concat('testTemplates.js'))
+		.pipe(sourcemaps.write())
 		.pipe(gulp.dest('public/compiled'));
 });
 
@@ -71,9 +74,9 @@ gulp.task('build-manifest', function () {
 			'node_modules/ractive-foundation/src/components/*/manifest.json',
 			'node_modules/ractive-foundation/src/plugins/*/manifest.json'
 		])
-		.pipe(plugins.sourcemaps.init())
+		.pipe(sourcemaps.init())
 		.pipe(grf.manifest('manifest.json'))
-		.pipe(plugins.sourcemaps.write())
+		.pipe(sourcemaps.write())
 		.pipe(gulp.dest('public/compiled/'));
 });
 
@@ -136,12 +139,12 @@ gulp.task('sass', function () {
 	return mergeStream(
 
 		gulp.src('./src/**/*.scss')
-			.pipe(plugins.sass())
-			.pipe(plugins.concat('components.css'))
+			.pipe(sass())
+			.pipe(concat('components.css'))
 			.pipe(gulp.dest('./public/css')),
 
 		gulp.src('./node_modules/foundation-sites/scss/*.scss')
-			.pipe(plugins.sass())
+			.pipe(sass())
 			.pipe(gulp.dest('./public/css/foundation'))
 	);
 
@@ -165,15 +168,15 @@ gulp.task('copy-vendors', function () {
 			'./node_modules/superagent/superagent.js',
 			'./node_modules/page/page.js',
 			'./node_modules/foundation-sites/js/vendor/modernizr.js',
-			'./node_modules/lodash-compat/index.js',
+			'./node_modules/lodash/index.js',
 			'./node_modules/hljs-cdn-release/build/highlight.min.js'
 		])
-		.pipe(plugins.copy('./public/js', { prefix: 1 })),
+		.pipe(copy('./public/js', { prefix: 1 })),
 
 		gulp.src([
 			'./node_modules/hljs-cdn-release/build/styles/github.min.css'
 		])
-		.pipe(plugins.copy('./public/css', { prefix: 1 })),
+		.pipe(copy('./public/css', { prefix: 1 })),
 
 		// Our own project files.
 		gulp.src('./src/route.js')
