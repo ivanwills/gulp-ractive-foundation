@@ -7,7 +7,6 @@ var Ractive  = require('ractive'),
 	_        = require('lodash'),
 	Ractive  = require('ractive'),
 	Cucumber = require('cucumber'),
-	glob     = require('simple-glob'),
 	//applySourceMap = require('vinyl-sourcemaps-apply'),
 	readFile = q.nfbind(fs.readFile),
 	readDir = q.nfbind(fs.readdir);
@@ -21,9 +20,17 @@ var addObjectName = function(name) {
 	return name.match(/^[$_a-zA-Z]\w+$/) ? '.' + name : '["' + name + '"]';
 };
 
+// returns the full object name
+//  eg Ractive.components['ux-thing']
+var objectName = function(options, name) {
+	console.log(options.prefix);
+	console.log( options.prefix.parent + '.' + options.prefix[options.type] + addObjectName(name));
+	return options.prefix.parent + '.' + options.prefix[options.type] + addObjectName(name);
+};
+
 // return JS code to add the "contents" to "name" of object "prefix"
-var addName = function(prefix, name, contents) {
-	return prefix + addObjectName(name) + ' = ' + contents;
+var addName = function(options, name, contents) {
+	return objectName(options, name) + ' = ' + contents;
 };
 
 // function to combine all good promises (ignoring bad ones)
@@ -32,9 +39,6 @@ var allGood = function(all) {
 	_.map(all, function(arg) {
 		if (arg.state === 'fulfilled') {
 			contents = contents + arg.value;
-		}
-		else {
-			//console.error(arg);
 		}
 	});
 
@@ -47,9 +51,6 @@ var onlyGood = function(all) {
 	_.map(all, function(arg) {
 		if (arg.state === 'fulfilled') {
 			good.push(arg.value);
-		}
-		else {
-			//console.error(arg);
 		}
 	});
 
@@ -76,7 +77,7 @@ var getPartials = function(partialsDir, objectName, options) {
 						readFile(partialsDir + path.sep + file, 'utf-8')
 							.then(function(contents) {
 								var text = addName(
-									options.prefix.partials + addObjectName(objectName) + '.partials',
+									options,
 									template,
 									parseTemplate(contents, options)
 								) + ';\n';
@@ -101,7 +102,6 @@ var getComponents = function(componentsDir, objectName, options) {
 				var component = componentsDir + path.sep + file;
 				if (fs.statSync(component).isDirectory()) {
 					var subOptions = _.clone(options, 1);
-					subOptions.prefix.components = options.prefix.components + addObjectName(objectName) + '.components';
 					subOptions.inner = true;
 					list.push(getComponent(component + path.sep + 'manifest.json', subOptions)
 						.then(function(js) {
@@ -120,37 +120,44 @@ var getComponents = function(componentsDir, objectName, options) {
 getComponent = function(file, options) {
 	var nameRE     = new RegExp(path.sep + '([^' + path.sep + ']+)$');
 	var dir        = file.replace(nameRE, '');
-	var objectName = dir.match(nameRE)[1];
+	var name       = dir.match(nameRE)[1];
+	var fullName   = objectName(options, name);
+	var subOptions = _.clone(options, 1);
+	subOptions.prefix.parent = fullName;
 
-	var js = readFile(dir + path.sep + objectName + '.js', 'utf-8')
+	var js = readFile(dir + path.sep + name + '.js', 'utf-8')
 		.then(function(contents) {
 			contents = contents.replace(/^\s*\/[*]\s*global[^*]*[*]\/(\r?\n)+/, '');
 			return addName(
-				options.prefix[options.type],
-				objectName,
+				options,
+				name,
 				contents
 			) + (options.suffix || '');
 		});
 
-	var hbs = readFile(dir + path.sep + objectName + '.hbs', 'utf-8')
+	var hbs = readFile(dir + path.sep + name + '.hbs', 'utf-8')
 		.then(function(contents) {
+			var templateOptions = _.clone(options, 1);
+			templateOptions.type = 'templates';
 			return addName(
-				options.prefix.templates,
-				objectName,
+				templateOptions,
+				name,
 				parseTemplate(contents, options)
 			) + ';\n';
 		});
 
+	var partialOptions = _.clone(subOptions, 1);
+	partialOptions.type = 'partials';
 	var partialsDir = dir + path.sep + 'partials';
-	var partials = getPartials(partialsDir, objectName, options);
+	var partials = getPartials(partialsDir, name, partialOptions);
 
 	var componentsDir = dir + path.sep + 'components';
-	var components = getComponents(componentsDir, objectName, options);
+	var components = getComponents(componentsDir, name, subOptions);
 
 	return q.allSettled([hbs, js, partials, components])
 		.then(allGood)
 		.then(function(js) {
-			return [js, objectName];
+			return [js, name];
 		});
 };
 
