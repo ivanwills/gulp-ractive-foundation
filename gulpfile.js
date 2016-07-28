@@ -5,10 +5,10 @@ var del     = require('del'),
 	seleniumServer = require('./node_modules/ractive-foundation/tasks/seleniumServer'),
 	mergeStream    = require('merge-stream'),
 	runSequence    = require('run-sequence'),
-	sass = require('gulp-sass'),
-	copy = require('gulp-copy'),
+	sass       = require('gulp-sass'),
+	copy       = require('gulp-copy'),
 	sourcemaps = require('gulp-sourcemaps'),
-	concat = require('gulp-concat');
+	concat     = require('gulp-concat');
 
 gulp.task('clean', function (callback) {
 	return del([
