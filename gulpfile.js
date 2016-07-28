@@ -166,7 +166,6 @@ gulp.task('copy-vendors', function () {
 			'./node_modules/jquery/dist/jquery.min.map',
 			'./node_modules/lodash/lodash.min.js',
 			'./node_modules/superagent/superagent.js',
-			'./node_modules/page/page.js',
 			'./node_modules/foundation-sites/js/vendor/modernizr.js',
 			'./node_modules/lodash/index.js',
 			'./node_modules/hljs-cdn-release/build/highlight.min.js'
