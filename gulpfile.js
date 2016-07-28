@@ -189,8 +189,14 @@ gulp.task('copy-vendors', function () {
 
 });
 
+gulp.task('copy-docs', function () {
+	return gulp.src(['src/docs/index.html'])
+		.pipe(plugins.copy('./public', { prefix: 1 }));
+});
+
 gulp.task('build', [
 	'sass',
+	'copy-docs',
 	'copy-vendors',
 	'build-components',
 	'build-plugins',
