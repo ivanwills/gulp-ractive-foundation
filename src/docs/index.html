@@ -26,13 +26,13 @@
 	<body>
 		<div id="container">
 			<h2>gulp-ractive-foundation</h2>
-			<gulp-test />
+			<gulp-test todo="Gulp Ractive Foundation!"/>
 		</div>
 		<script type="text/javascript" src="components/gulp-test.js"></script>
 		<script type="text/javascript">
 			console.info('widgit loading', Ractive.components);
 
-			window.ractive = Ractive.extend({
+			window.ractive = new Ractive({
 				el: document.querySelector('#container'),
 				template: document.querySelector('#container').innerHTML,
 				isolated: true
