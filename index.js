@@ -24,11 +24,12 @@ var defaults = {
 	tripleDelimiters: ['{{{', '}}}'],
 	format:           'pretty',
 	prefix: {
-		components:  'Ractive.components',
-		decorators:  'Ractive.decorators',
-		partials:    'Ractive.components',
-		templates:   'var templates; if (!templates) templates=[];\ntemplates',
-		transitions: 'Ractive.transitions',
+		parent:      'Ractive',
+		components:  'components',
+		decorators:  'decorators',
+		partials:    'partials',
+		templates:   'defaults.templates',
+		transitions: 'transitions',
 	},
 	file2object: function (file, options) {
 		file = typeof file === 'string' ? file : file.path;
