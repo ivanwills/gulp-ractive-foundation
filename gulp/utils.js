@@ -7,6 +7,7 @@ var Ractive  = require('ractive'),
 	_        = require('lodash'),
 	Ractive  = require('ractive'),
 	Cucumber = require('cucumber'),
+	glob     = require('simple-glob'),
 	//applySourceMap = require('vinyl-sourcemaps-apply'),
 	readFile = q.nfbind(fs.readFile),
 	readDir = q.nfbind(fs.readdir);
@@ -73,10 +74,15 @@ var onlyGood = function(all) {
 
 var parseTemplate = function(contents, options) {
 	var ractive = ( options && options.ractive ) || Ractive;
-	console.log(typeof ractive.parse);
 	contents = ractive.parse(contents);
-	console.log(typeof contents);
 	return JSON.stringify(contents);
+};
+
+var files = function(dir, template, options) {
+	var fileGlob = (dir + path.sep + template).replace(/[{][{](.*)[}][}]/, function() {
+		return options[arguments[1]];
+	});
+	return glob(fileGlob);
 };
 
 // get all partials from the partials directory and compile them
@@ -139,7 +145,7 @@ getComponent = function(file, options) {
 	var subOptions = _.clone(options, 1);
 	subOptions.prefix.parent = fullName;
 
-	var js = readFile(dir + path.sep + name + '.js', 'utf-8')
+	var js = readFile(files(dir, options.files.components, {name: name})[0], 'utf-8')
 		.then(function(contents) {
 			contents = contents.replace(/^\s*\/[*]\s*global[^*]*[*]\/(\r?\n)+/, '');
 			return addName(
@@ -149,7 +155,7 @@ getComponent = function(file, options) {
 			) + (options.suffix || '');
 		});
 
-	var hbs = readFile(dir + path.sep + name + '.hbs', 'utf-8')
+	var hbs = readFile(files(dir, options.files.templates, {name: name})[0], 'utf-8')
 		.then(function(contents) {
 			var templateOptions = _.clone(options, 1);
 			templateOptions.type = 'templates';
