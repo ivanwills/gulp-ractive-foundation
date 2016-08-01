@@ -191,7 +191,7 @@ var getTemplate = function(file, options) {
 	return readFile(file, 'utf-8')
 		.then(function(contents) {
 			return addName(
-				options.prefix[options.type],
+				options,
 				objectName,
 				parseTemplate(contents, options)
 			) + ';\n';
