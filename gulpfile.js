@@ -18,10 +18,11 @@ gulp.task('clean', function (callback) {
 
 gulp.task('build-components', function () {
 	return gulp.src([
-			'src/components/*/manifest.json',
+			'src/components/**/*',
 			'node_modules/ractive-foundation/src/components/*/manifest.json'
 		])
 		.pipe(sourcemaps.init())
+		.pipe(grf.filter(/src\/components\/([^\/]+)/))
 		.pipe(grf.component())
 		.pipe(gulp.dest('public/components/'))
 		.pipe(concat('components.js'))

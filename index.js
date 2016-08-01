@@ -6,6 +6,7 @@ var component     = require('./gulp/component'),
 	manifest      = require('./gulp/manifest'),
 	documentation = require('./gulp/documentation'),
 	bdd           = require('./gulp/bdd'),
+	filter        = require('./gulp/filter'),
 	_             = require('lodash'),
 	fs            = require('fs'),
 	path          = require('path');
@@ -70,7 +71,8 @@ module.exports = function(options) {
 		plugin       : plugin(options),
 		manifest     : manifest(options),
 		documentation: documentation(options),
-		bdd          : bdd(options)
+		bdd          : bdd(options),
+		filter       : filter(options),
 	};
 
 	return object;
