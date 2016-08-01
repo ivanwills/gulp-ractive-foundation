@@ -49,6 +49,8 @@ editor:
       - ../beta/gulpfile.js
     utils:
       - gulp/utils.js
+      - gulp/filter.js
+      - gulp/bdd.js
       - node_modules/ractive-foundation/tasks/rfCucumber.js
       - node_modules/ractive-foundation/tasks/seleniumServer.js
       #- node_modules/ractive-foundation/tasks/renderDocumentation.js
@@ -58,4 +60,3 @@ editor:
       - gulp/manifest.js
       - gulp/plugin.js
       - gulp/template.js
-
