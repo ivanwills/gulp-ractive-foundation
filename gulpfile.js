@@ -18,9 +18,10 @@ gulp.task('clean', function (callback) {
 
 gulp.task('build-components', function () {
 	return gulp.src([
-			'src/components/*/manifest.json',
+			'src/components/**/*',
 			'node_modules/ractive-foundation/src/components/*/manifest.json'
 		])
+		.pipe(grf.filter(/src\/components\/([^\/]+)/))
 		.pipe(sourcemaps.init())
 		.pipe(grf.component())
 		.pipe(gulp.dest('public/components/'))
@@ -31,9 +32,10 @@ gulp.task('build-components', function () {
 
 gulp.task('build-plugins', function () {
 	return gulp.src([
-			'src/plugins/*/manifest.json',
+			'src/plugins/**/*',
 			'node_modules/ractive-foundation/src/plugins/*/manifest.json'
 		])
+		.pipe(grf.filter(/src\/plugins\/([^\/]+)/))
 		.pipe(sourcemaps.init())
 		.pipe(grf.plugin())
 		.pipe(concat('js'))
@@ -83,9 +85,10 @@ gulp.task('build-manifest', function () {
 gulp.task('build-documentation', ['build-documentation-components', 'build-documentation-plugins']);
 gulp.task('build-documentation-components', function () {
 	return gulp.src([
-			'src/components/*/manifest.json',
+			'src/components/**/*',
 			'node_modules/ractive-foundation/src/components/*/manifest.json',
 		])
+		.pipe(grf.filter(/src\/components\/([^\/]+)/))
 		.pipe(grf.documentation({
 			partials: 'src/',
 			template: 'src/component.html'
@@ -94,9 +97,10 @@ gulp.task('build-documentation-components', function () {
 });
 gulp.task('build-documentation-plugins', function () {
 	return gulp.src([
-			'src/plugins/*/manifest.json',
+			'src/plugins/**/*',
 			'node_modules/ractive-foundation/src/plugins/*/manifest.json'
 		])
+		.pipe(grf.filter(/src\/plugins\/([^\/]+)/))
 		.pipe(grf.documentation({
 			partials: 'src',
 			template: 'src/component.html'
