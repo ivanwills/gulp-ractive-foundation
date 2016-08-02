@@ -74,8 +74,7 @@ var onlyGood = function(all) {
 
 var parseTemplate = function(contents, options) {
 	var ractive = ( options && options.ractive ) || Ractive;
-	contents = ractive.parse(contents);
-	return JSON.stringify(contents);
+	return ractive.parse(contents);
 };
 
 var files = function(dir, template, options) {
@@ -99,7 +98,7 @@ var getPartials = function(partialsDir, objectName, options) {
 								var text = addName(
 									options,
 									template,
-									parseTemplate(contents, options)
+									JSON.stringify(parseTemplate(contents, options))
 								) + ';\n';
 
 								return text;
@@ -163,7 +162,7 @@ getComponent = function(file, options) {
 				addName(
 				templateOptions,
 				name,
-				parseTemplate(contents, options)
+				JSON.stringify(parseTemplate(contents, options))
 			) + ';\n';
 		});
 
