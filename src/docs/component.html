@@ -19,5 +19,7 @@
 	{{#with component.useCases[0]}}
 		<h5>Use case: {{title}}</h5>
 		{{> component-use-case}}
+		<br />
+		<a href="/testRunner.html#!/component/{{component.componentName}}/use-case/{{name}}">Test</a>
 	{{/with}}
 {{/if}}

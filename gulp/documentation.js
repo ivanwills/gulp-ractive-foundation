@@ -13,7 +13,7 @@ var through     = require('through2'),
 const PLUGIN_NAME = 'gulp-ractive-foundation-documentation';
 
 function documentation(options) {
-	options.ractive = util.getTemplates(options.partials)
+	options.ractive = util.getTemplates(options.partials, _.clone(options, 1))
 		.then(function(partials) {
 			return readFile(options.template, 'UTF-8')
 				.then(function(contents) {

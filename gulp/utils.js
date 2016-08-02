@@ -67,6 +67,9 @@ var onlyGood = function(all) {
 		if (arg.state === 'fulfilled') {
 			good.push(arg.value);
 		}
+		else {
+			//console.error('bad stuff', arg);
+		}
 	});
 
 	return good;
@@ -192,43 +195,47 @@ var getTemplate = function(file, options) {
 			return addName(
 				options,
 				objectName,
-				parseTemplate(contents, options)
+				JSON.stringify(parseTemplate(contents, options))
 			) + ';\n';
 		});
 };
 
-var getTemplates = function(dir, options) {
-	return readDir(dir)
-		.then(function(files) {
-			var list = [];
-			files.map(function(file) {
-				var base = file.replace(/[.]\w+$/, '');
-				file = dir + path.sep + file;
-				if (fs.statSync(file).isFile()) {
-					list.push(readFile(file)
-						.then(function (contents) {
-							console.log(base, file);
-							return [base, parseTemplate(contents)];
-						})
-					);
-				}
+var getTemplates = function(templates, options) {
+	var files = glob(templates);
+	var list = [];
+	files.map(function(file) {
+		var isFile;
+		try {
+			isFile = fs.statSync(file).isFile();
+		}
+		catch (e) {}
+
+		if (!isFile) {
+			return;
+		}
+
+		var base = file;
+		if (options.relative) {
+			base = base.replace(options.relative, '');
+		}
+		base = base.replace(/[.]\w+$/, '');
+
+		list.push(readFile(file)
+			.then(function (contents) {
+				return [base, parseTemplate(contents.toString(), options)];
+			})
+		);
+	});
+
+	return q.allSettled(list)
+		.then(onlyGood)
+		.then(function(all) {
+			var templates = {};
+			_.map(all, function (template) {
+				templates[template[0]] = template[1];
 			});
 
-			return q.allSettled(list)
-				.then(onlyGood)
-				.then(function(all) {
-					var templates = {};
-					_.map(all, function (template) {
-						console.log(template[0]);
-						templates[template[0]] = template[1];
-					});
-
-						console.log(templates);
-					return templates;
-				});
-		})
-		.catch(function(e) {
-			console.log(e);
+			return templates;
 		});
 };
 
@@ -239,10 +246,9 @@ var getDocumentation = function(file, options) {
 		.then(function(manifest) {
 			return options.ractive.then(function(Ractive) {
 				// now have the object who's documentation we want to generate's manifest can start building.
-				Ractive.data = {
-					object: manifest,
-				};
-				console.log('doc done', file);
+				manifest.componentName = options.file2object(file, options);
+				Ractive.set('component', manifest);
+
 				return Ractive.toHTML();
 			})
 			.catch(function(e) {
@@ -261,7 +267,7 @@ getManifest = function(file, options) {
 			var json = JSON.parse(contents);
 			json.name = objectName;
 			json.dir  = objectDir;
-			json.useCases = {};
+			json.useCases = [];
 
 			try {
 				if (! fs.statSync(usecases).isDirectory()) {
@@ -287,7 +293,7 @@ getManifest = function(file, options) {
 							.then(onlyGood)
 							.then(function(all) {
 								_.map(all, function (usecase) {
-									json.useCases[usecase.name] = usecase;
+									json.useCases.push(usecase);
 								});
 
 								return json;
