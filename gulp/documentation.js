@@ -22,7 +22,7 @@ function documentation(options) {
 					return new Ractive({
 						template: template,
 						partials: partials,
-						data: {},
+						data: _.clone(options.defaults || {}, 1),
 						delimiters: options.delimiters,
 						tripleDelimiters: options.tripleDelimiter
 					});
