@@ -10,6 +10,7 @@
     "start": "npm prune && npm install && gulp"
   },
   "dependencies": {
+    "cucumber": "~0.4.9",
     "gulp-rename": "^1.2.2",
     "q": "^1.4.1",
     "ractive": "^0.7.3",
@@ -22,7 +23,6 @@
   },
   "devDependencies": {
     "ally": "^0.2.13",
-    "cucumber": "~0.4.9",
     "del": "^2.0.2",
     "express": "^4.14.0",
     "foundation-sites": "git+https://github.com/zurb/bower-foundation.git#5.5.3",
