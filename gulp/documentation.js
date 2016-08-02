@@ -2,10 +2,12 @@
 
 var through     = require('through2'),
 	gulputil    = require('gulp-util'),
+	q           = require('q'),
 	util        = require('./utils.js'),
 	_           = require('lodash'),
 	fs          = require('fs'),
 	Ractive     = require('ractive'),
+	readFile    = q.nfbind(fs.readFile),
 	PluginError = gulputil.PluginError;
 
 const PLUGIN_NAME = 'gulp-ractive-foundation-documentation';
@@ -13,14 +15,17 @@ const PLUGIN_NAME = 'gulp-ractive-foundation-documentation';
 function documentation(options) {
 	options.ractive = util.getTemplates(options.partials)
 		.then(function(partials) {
-			var template = Ractive.parse(fs.readFileSync(options.template, 'UTF-8'), options);
+			return readFile(options.template, 'UTF-8')
+				.then(function(contents) {
+					var template = Ractive.parse(contents, options);
 
-			return new Ractive({
-				template: template,
-				partials: partials,
-				data: {},
-				delimiters: options.delimiters,
-				tripleDelimiters: options.tripleDelimiter
+					return new Ractive({
+						template: template,
+						partials: partials,
+						data: {},
+						delimiters: options.delimiters,
+						tripleDelimiters: options.tripleDelimiter
+					});
 			});
 		})
 		.catch(function(err) {
