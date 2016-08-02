@@ -80,9 +80,9 @@ var parseTemplate = function(contents, options) {
 	return ractive.parse(contents);
 };
 
-var files = function(dir, template, options) {
-	var fileGlob = (dir + path.sep + template).replace(/[{][{](.*)[}][}]/, function() {
-		return options[arguments[1]];
+var files = function(dir, template, data) {
+	var fileGlob = (dir + path.sep + template).replace(/[{][{](.*)[}][}]/, function(match, key) {
+		return data[key];
 	});
 	return glob(fileGlob);
 };
