@@ -19,7 +19,6 @@ gulp.task('clean', function (callback) {
 gulp.task('build-components', function () {
 	return gulp.src([
 			'src/components/**/*',
-			'node_modules/ractive-foundation/src/components/*/manifest.json'
 		])
 		.pipe(grf.filter(/src\/components\/([^\/]+)/))
 		.pipe(sourcemaps.init())
@@ -33,7 +32,6 @@ gulp.task('build-components', function () {
 gulp.task('build-plugins', function () {
 	return gulp.src([
 			'src/plugins/**/*',
-			'node_modules/ractive-foundation/src/plugins/*/manifest.json'
 		])
 		.pipe(grf.filter(/src\/plugins\/([^\/]+)/))
 		.pipe(sourcemaps.init())
@@ -73,8 +71,6 @@ gulp.task('build-manifest', function () {
 	return gulp.src([
 			'src/components/*/manifest.json',
 			'src/plugins/*/manifest.json',
-			'node_modules/ractive-foundation/src/components/*/manifest.json',
-			'node_modules/ractive-foundation/src/plugins/*/manifest.json'
 		])
 		.pipe(sourcemaps.init())
 		.pipe(grf.manifest('manifest.json'))
@@ -86,19 +82,18 @@ gulp.task('build-documentation', ['build-documentation-components', 'build-docum
 gulp.task('build-documentation-components', function () {
 	return gulp.src([
 			'src/components/**/*',
-			'node_modules/ractive-foundation/src/components/*/manifest.json',
 		])
 		.pipe(grf.filter(/src\/components\/([^\/]+)/))
 		.pipe(grf.documentation({
-			partials: 'src/',
-			template: 'src/component.html'
+			partials: 'src/docs/c*.html',
+			relative: 'src/docs/',
+			template: 'src/docs/component.html'
 		}))
 		.pipe(gulp.dest('public/components'));
 });
 gulp.task('build-documentation-plugins', function () {
 	return gulp.src([
 			'src/plugins/**/*',
-			'node_modules/ractive-foundation/src/plugins/*/manifest.json'
 		])
 		.pipe(grf.filter(/src\/plugins\/([^\/]+)/))
 		.pipe(grf.documentation({
@@ -114,16 +109,12 @@ gulp.task('bdd', function (callback) {
 	return gulp.src([
 			'src/components/*/*.feature',
 			'src/plugins/*/*.feature',
-			'node_modules/ractive-foundation/src/components/*/*.feature',
-			'node_modules/ractive-foundation/src/plugins/*/*.feature'
 		])
 		.pipe(grf.bdd({
 			selServer: selServer.init(),
 			steps    : [
 				'src/components/*/*.steps.js',
 				'src/plugins/*/*.steps.js',
-				'node_modules/ractive-foundation/src/components/*/*.steps.js',
-				'node_modules/ractive-foundation/src/plugins/*/*.steps.js'
 			]
 		}))
 		.on('end', function() {
@@ -159,7 +150,6 @@ gulp.task('copy-vendors', function () {
 	return mergeStream(
 
 		gulp.src([
-			'./node_modules/ractive-foundation/dist/*.js',
 			'./node_modules/ractive/ractive.js',
 			'./node_modules/ractive/ractive.min.js',
 			'./node_modules/ractive/ractive.min.js.map',
