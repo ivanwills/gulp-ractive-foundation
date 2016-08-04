@@ -6,11 +6,7 @@
 	{{/if}}
 </div>
 <br/>
-<pre>
-	<code>{{{display}}}</code>
-</pre>
+<pre><code>{{{display}}}</code></pre>
 {{#if !template}}
-<pre>
-	<code>{{{data}}}</code>
-</pre>
+<pre><code>{{{JSON.stringify(data, null, ' ')}}}</code></pre>
 {{/if}}
