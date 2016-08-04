@@ -296,7 +296,7 @@ getManifest = function(file, options) {
 									json.useCases[usecase.name] = usecase;
 								});
 
-								json.useCasesNames = json.useCases.keys.sort;
+								json.useCasesNames = _.map(json.useCases, function(v, k) { return k; }).sort();
 								return json;
 							});
 					});
