@@ -267,7 +267,7 @@ getManifest = function(file, options) {
 			var json = JSON.parse(contents);
 			json.name = objectName;
 			json.dir  = objectDir;
-			json.useCases = [];
+			json.useCases = {};
 
 			try {
 				if (! fs.statSync(usecases).isDirectory()) {
@@ -293,9 +293,10 @@ getManifest = function(file, options) {
 							.then(onlyGood)
 							.then(function(all) {
 								_.map(all, function (usecase) {
-									json.useCases.push(usecase);
+									json.useCases[usecase.name] = usecase;
 								});
 
+								json.useCasesNames = json.useCases.keys.sort;
 								return json;
 							});
 					});

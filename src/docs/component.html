@@ -1,12 +1,12 @@
 {{#if component.useCases.length > 1}}
 <ux-tabarea>
 	<ux-tablinks>
-	{{#each component.useCases:i}}
-		<ux-tablink {{#if i === 0}}active="true"{{/if}}>{{title}}</ux-tablink>
+	{{#each component.useCasesNames:name}}
+		<ux-tablink >{{component.useCases[name].title}}</ux-tablink>
 	{{/each}}
 	</ux-tablinks>
 	<ux-tabpanes>
-		{{#each component.useCases}}
+		{{#each component.useCasesNames:name}}
 		<ux-tabpane>
 			{{> component-use-case}}
 			<br />
