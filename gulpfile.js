@@ -16,7 +16,7 @@ gulp.task('clean', function (callback) {
 	], callback);
 });
 
-gulp.task('build-components', function () {
+gulp.task('build-components', () => {
 	return gulp.src([
 			'src/components/**/*',
 		])
@@ -29,7 +29,7 @@ gulp.task('build-components', function () {
 		.pipe(gulp.dest('public/compiled/'));
 });
 
-gulp.task('build-plugins', function () {
+gulp.task('build-plugins', () => {
 	return gulp.src([
 			'src/plugins/**/*',
 		])
@@ -41,7 +41,7 @@ gulp.task('build-plugins', function () {
 		.pipe(gulp.dest('public/compiled/'));
 });
 
-gulp.task('build-partials', function () {
+gulp.task('build-partials', () => {
 	return gulp.src([
 			'**/*.hbs'
 		], { cwd: 'src/partials/' })
@@ -54,7 +54,7 @@ gulp.task('build-partials', function () {
 		.pipe(gulp.dest('public/compiled/'));
 });
 
-gulp.task('build-test-templates', function () {
+gulp.task('build-test-templates', () => {
 	return gulp.src([
 			'src/*/**/use-cases/*.hbs'
 		])
@@ -67,7 +67,7 @@ gulp.task('build-test-templates', function () {
 		.pipe(gulp.dest('public/compiled'));
 });
 
-gulp.task('build-manifest', function () {
+gulp.task('build-manifest', () => {
 	return gulp.src([
 			'src/components/*/manifest.json',
 			'src/plugins/*/manifest.json',
@@ -79,7 +79,7 @@ gulp.task('build-manifest', function () {
 });
 
 gulp.task('build-documentation', ['build-documentation-components', 'build-documentation-plugins']);
-gulp.task('build-documentation-components', function () {
+gulp.task('build-documentation-components', () => {
 	return gulp.src([
 			'src/components/**/*',
 		])
@@ -91,7 +91,7 @@ gulp.task('build-documentation-components', function () {
 		}))
 		.pipe(gulp.dest('public/components'));
 });
-gulp.task('build-documentation-plugins', function () {
+gulp.task('build-documentation-plugins', () => {
 	return gulp.src([
 			'src/plugins/**/*',
 		])
@@ -120,7 +120,7 @@ gulp.task('bdd', function (callback) {
 		.on('end', function() {
 			if (!killed) {
 				killed = true;
-				var done = function () {};
+				var done = () => {};
 				selServer
 					.killServer()
 					.then(done)
@@ -129,7 +129,7 @@ gulp.task('bdd', function (callback) {
 		});
 });
 
-gulp.task('sass', function () {
+gulp.task('sass', () => {
 
 	return mergeStream(
 
@@ -145,7 +145,7 @@ gulp.task('sass', function () {
 
 });
 
-gulp.task('copy-vendors', function () {
+gulp.task('copy-vendors', () => {
 
 	return mergeStream(
 
@@ -185,7 +185,7 @@ gulp.task('copy-vendors', function () {
 
 });
 
-gulp.task('copy-docs', function () {
+gulp.task('copy-docs', () => {
 	return gulp.src(['src/docs/index.html'])
 		.pipe(copy('./public', { prefix: 2 }));
 });
@@ -201,7 +201,7 @@ gulp.task('build', [
 	'build-documentation'
 ]);
 
-gulp.task('default', function () {
+gulp.task('default', () => {
 	return runSequence(
 		'clean',
 		'build'
