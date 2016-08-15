@@ -21,6 +21,7 @@
     "url": "https://github.com/ivanwills/gulp-ractive-foundation.git"
   },
   "bugs": "https://github.com/ivanwills/gulp-ractive-foundation/issues",
+  "license": "MIT",
   "dependencies": {
     "cucumber": "~0.4.9",
     "gulp-concat": "^2.6.0",
