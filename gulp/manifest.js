@@ -85,7 +85,5 @@ function manifest(file, options) {
 }
 
 module.exports = function(defaults) {
-	return function(file, options) {
-		return manifest(file, _.assign({}, defaults, options));
-	};
+	return (file, options) => manifest(file, _.assign({}, defaults, options));
 };

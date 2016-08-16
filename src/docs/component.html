@@ -1,23 +1,30 @@
-{{#if component.useCases.length > 1}}
+{{#if component.useCasesNames.length > 1}}
 <ux-tabarea>
 	<ux-tablinks>
-	{{#each component.useCases:i}}
-		<ux-tablink {{#if i === 0}}active="true"{{/if}}>{{title}}</ux-tablink>
+	{{#each component.useCasesNames:name}}
+		<ux-tablink >{{component.useCases[.].title}}</ux-tablink>
 	{{/each}}
 	</ux-tablinks>
 	<ux-tabpanes>
-		{{#each component.useCases}}
+	{{#each component.useCasesNames}}
+		{{#with component.useCases[.]}}
 		<ux-tabpane>
 			{{> component-use-case}}
 			<br />
 			<a href="/testRunner.html#!/component/{{component.componentName}}/use-case/{{name}}">Test</a>
 		</ux-tabpane>
-		{{/each}}
+		{{/with}}
+	{{/each}}
 	</ux-tabpanes>
 </ux-tabarea>
 {{else}}
 	{{#with component.useCases[0]}}
 		<h5>Use case: {{title}}</h5>
 		{{> component-use-case}}
+		<br />
+		<a href="/testRunner.html#!/component/{{component.componentName}}/use-case/{{name}}">Test</a>
 	{{/with}}
 {{/if}}
+<!--pre>
+{{JSON.stringify(component, null, ' ')}}
+</pre-->

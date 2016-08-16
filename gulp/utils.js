@@ -21,9 +21,31 @@ var addObjectName = function(name) {
 	return name.match(/^[$_a-zA-Z]\w+$/) ? '.' + name : '["' + name + '"]';
 };
 
+// returns the full object name
+//  eg Ractive.components['ux-thing']
+var objectName = function(options, name) {
+	return options.prefix.parent + '.' + options.prefix[options.type] + addObjectName(name);
+};
+
 // return JS code to add the "contents" to "name" of object "prefix"
-var addName = function(prefix, name, contents) {
-	return prefix + addObjectName(name) + ' = ' + contents;
+var addName = function(options, name, contents) {
+	return objectName(options, name) + ' = ' + contents;
+};
+
+var saftyPrefix = function(options, type) {
+	var prefixParts = options.prefix[type].split(/[.]/);
+	var currPrefix  = prefixParts.shift();
+	var out         = 'if (!' + options.prefix.parent + '.' + currPrefix + ') {\n' +
+		'\t' + options.prefix.parent + '.' + currPrefix + ' = {};\n' +
+		'}\n';
+
+	for (var i in prefixParts) {
+		currPrefix += '.' + prefixParts[i];
+		out += 'if (!' + options.prefix.parent + '.' + currPrefix + ') {\n' +
+			'\t' + options.prefix.parent + '.' + currPrefix + ' = {};\n' +
+			'}\n';
+	}
+	return out;
 };
 
 // function to combine all good promises (ignoring bad ones)
@@ -32,9 +54,6 @@ var allGood = function(all) {
 	_.map(all, function(arg) {
 		if (arg.state === 'fulfilled') {
 			contents = contents + arg.value;
-		}
-		else {
-			//console.error(arg);
 		}
 	});
 
@@ -49,7 +68,7 @@ var onlyGood = function(all) {
 			good.push(arg.value);
 		}
 		else {
-			//console.error(arg);
+			//console.error('bad stuff', arg);
 		}
 	});
 
@@ -58,10 +77,14 @@ var onlyGood = function(all) {
 
 var parseTemplate = function(contents, options) {
 	var ractive = ( options && options.ractive ) || Ractive;
-	console.log(typeof ractive.parse);
-	contents = ractive.parse(contents);
-	console.log(typeof contents);
-	return JSON.stringify(contents);
+	return ractive.parse(contents);
+};
+
+var files = function(dir, template, data) {
+	var fileGlob = (dir + path.sep + template).replace(/[{][{](.*)[}][}]/, function(match, key) {
+		return data[key];
+	});
+	return glob(fileGlob);
 };
 
 // get all partials from the partials directory and compile them
@@ -76,9 +99,9 @@ var getPartials = function(partialsDir, objectName, options) {
 						readFile(partialsDir + path.sep + file, 'utf-8')
 							.then(function(contents) {
 								var text = addName(
-									options.prefix.partials + addObjectName(objectName) + '.partials',
+									options,
 									template,
-									parseTemplate(contents, options)
+									JSON.stringify(parseTemplate(contents, options))
 								) + ';\n';
 
 								return text;
@@ -101,7 +124,6 @@ var getComponents = function(componentsDir, objectName, options) {
 				var component = componentsDir + path.sep + file;
 				if (fs.statSync(component).isDirectory()) {
 					var subOptions = _.clone(options, 1);
-					subOptions.prefix.components = options.prefix.components + addObjectName(objectName) + '.components';
 					subOptions.inner = true;
 					list.push(getComponent(component + path.sep + 'manifest.json', subOptions)
 						.then(function(js) {
@@ -120,37 +142,45 @@ var getComponents = function(componentsDir, objectName, options) {
 getComponent = function(file, options) {
 	var nameRE     = new RegExp(path.sep + '([^' + path.sep + ']+)$');
 	var dir        = file.replace(nameRE, '');
-	var objectName = dir.match(nameRE)[1];
+	var name       = dir.match(nameRE)[1];
+	var fullName   = objectName(options, name);
+	var subOptions = _.clone(options, 1);
+	subOptions.prefix.parent = fullName;
 
-	var js = readFile(dir + path.sep + objectName + '.js', 'utf-8')
+	var js = readFile(files(dir, options.files.components, {name: name})[0], 'utf-8')
 		.then(function(contents) {
 			contents = contents.replace(/^\s*\/[*]\s*global[^*]*[*]\/(\r?\n)+/, '');
 			return addName(
-				options.prefix[options.type],
-				objectName,
+				options,
+				name,
 				contents
 			) + (options.suffix || '');
 		});
 
-	var hbs = readFile(dir + path.sep + objectName + '.hbs', 'utf-8')
+	var hbs = readFile(files(dir, options.files.templates, {name: name})[0], 'utf-8')
 		.then(function(contents) {
-			return addName(
-				options.prefix.templates,
-				objectName,
-				parseTemplate(contents, options)
+			var templateOptions = _.clone(options, 1);
+			templateOptions.type = 'templates';
+			return saftyPrefix(options, 'templates') +
+				addName(
+				templateOptions,
+				name,
+				JSON.stringify(parseTemplate(contents, options))
 			) + ';\n';
 		});
 
+	var partialOptions = _.clone(subOptions, 1);
+	partialOptions.type = 'partials';
 	var partialsDir = dir + path.sep + 'partials';
-	var partials = getPartials(partialsDir, objectName, options);
+	var partials = getPartials(partialsDir, name, partialOptions);
 
 	var componentsDir = dir + path.sep + 'components';
-	var components = getComponents(componentsDir, objectName, options);
+	var components = getComponents(componentsDir, name, subOptions);
 
 	return q.allSettled([hbs, js, partials, components])
 		.then(allGood)
 		.then(function(js) {
-			return [js, objectName];
+			return [js, name];
 		});
 };
 
@@ -163,45 +193,49 @@ var getTemplate = function(file, options) {
 	return readFile(file, 'utf-8')
 		.then(function(contents) {
 			return addName(
-				options.prefix[options.type],
+				options,
 				objectName,
-				parseTemplate(contents, options)
+				JSON.stringify(parseTemplate(contents, options))
 			) + ';\n';
 		});
 };
 
-var getTemplates = function(dir, options) {
-	return readDir(dir)
-		.then(function(files) {
-			var list = [];
-			files.map(function(file) {
-				var base = file.replace(/[.]\w+$/, '');
-				file = dir + path.sep + file;
-				if (fs.statSync(file).isFile()) {
-					list.push(readFile(file)
-						.then(function (contents) {
-							console.log(base, file);
-							return [base, parseTemplate(contents)];
-						})
-					);
-				}
+var getTemplates = function(templates, options) {
+	var files = glob(templates);
+	var list = [];
+	files.map(function(file) {
+		var isFile;
+		try {
+			isFile = fs.statSync(file).isFile();
+		}
+		catch (e) {}
+
+		if (!isFile) {
+			return;
+		}
+
+		var base = file;
+		if (options.relative) {
+			base = base.replace(options.relative, '');
+		}
+		base = base.replace(/[.]\w+$/, '');
+
+		list.push(readFile(file)
+			.then(function (contents) {
+				return [base, parseTemplate(contents.toString(), options)];
+			})
+		);
+	});
+
+	return q.allSettled(list)
+		.then(onlyGood)
+		.then(function(all) {
+			var templates = {};
+			_.map(all, function (template) {
+				templates[template[0]] = template[1];
 			});
 
-			return q.allSettled(list)
-				.then(onlyGood)
-				.then(function(all) {
-					var templates = {};
-					_.map(all, function (template) {
-						console.log(template[0]);
-						templates[template[0]] = template[1];
-					});
-
-						console.log(templates);
-					return templates;
-				});
-		})
-		.catch(function(e) {
-			console.log(e);
+			return templates;
 		});
 };
 
@@ -212,10 +246,9 @@ var getDocumentation = function(file, options) {
 		.then(function(manifest) {
 			return options.ractive.then(function(Ractive) {
 				// now have the object who's documentation we want to generate's manifest can start building.
-				Ractive.data = {
-					object: manifest,
-				};
-				console.log('doc done', file);
+				manifest.componentName = options.file2object(file, options);
+				Ractive.set('component', manifest);
+
 				return Ractive.toHTML();
 			})
 			.catch(function(e) {
@@ -263,6 +296,7 @@ getManifest = function(file, options) {
 									json.useCases[usecase.name] = usecase;
 								});
 
+								json.useCasesNames = _.map(json.useCases, function(v, k) { return k; }).sort();
 								return json;
 							});
 					});

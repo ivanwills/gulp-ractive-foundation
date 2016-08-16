@@ -9,14 +9,14 @@ var through     = require('through2'),
 const PLUGIN_NAME = 'gulp-ractive-foundation-component';
 
 function component(options) {
-	return through.obj(function (file, enc, callback) {
+	return through.obj((file, enc, callback) => {
 		if (file.isStream()) {
 			this.emit('error', new PluginError(PLUGIN_NAME, 'Streams are not supported!'));
 			return callback();
 		}
 
 		util.getComponent(file.path, options)
-			.then(function(contents) {
+			.then(function (contents) {
 				file.path = file.base + options.file2object(file, options) + '.js';
 				file.contents = new Buffer(contents[0]);
 
@@ -27,8 +27,7 @@ function component(options) {
 	});
 }
 
+
 module.exports = function(defaults) {
-	return function(options) {
-		return component(_.assign({}, defaults, options));
-	};
+		return (options) => component(_.assign({}, defaults, options));
 };

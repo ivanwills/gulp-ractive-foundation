@@ -30,9 +30,5 @@ function bdd(options) {
 }
 
 module.exports = function(defaults) {
-	return function(options) {
-		options = options ? _.merge(_.clone(defaults), options) : _.clone(defaults);
-
-		return bdd(options);
-	};
+	return (options) => bdd(_.assign({}, defaults, options));
 };

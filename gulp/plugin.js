@@ -38,7 +38,6 @@ function plugin(options) {
 }
 
 module.exports = function(defaults) {
-	return function(options) {
-		return plugin(_.assign({}, defaults, options));
+	return (options) => plugin(_.assign({}, defaults, options));
 	};
 };

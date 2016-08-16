@@ -6,16 +6,22 @@ default:
     NVM_BIN: /home/ivan/.nvm/versions/v4.2.6/bin
     NVM_PATH: /home/ivan/.nvm/versions/v4.2.6/lib/node
     PATH: /home/ivan/.nvm/versions/v4.2.6/bin:./node_modules/.bin:$PATH
-  restart: 0
+  restart: 1
   wait: 1
 name: gulp-ractive-foundation
 terminals:
   2:
     edit: base
   3:
-    edit: utils
+    edit: gulp-base
   4:
-    edit: gulp
+    edit: gulp-common
+  5:
+    edit: gulp-rest
+  6:
+    edit: src/docs/*.html
+  7:
+    edit: gulp-test-all
 editor:
   helper: |
     sub {
@@ -49,6 +55,8 @@ editor:
       - ../beta/gulpfile.js
     utils:
       - gulp/utils.js
+      - gulp/filter.js
+      - gulp/bdd.js
       - node_modules/ractive-foundation/tasks/rfCucumber.js
       - node_modules/ractive-foundation/tasks/seleniumServer.js
       #- node_modules/ractive-foundation/tasks/renderDocumentation.js
@@ -58,4 +66,14 @@ editor:
       - gulp/manifest.js
       - gulp/plugin.js
       - gulp/template.js
-
+    gulp-base:
+      - gulp/utils.js
+      - gulp/bdd.js
+    gulp-common:
+      - gulp/component.js
+      - gulp/plugin.js
+      - gulp/template.js
+    gulp-rest:
+      - gulp/filter.js
+      - gulp/manifest.js
+      - gulp/documentation.js

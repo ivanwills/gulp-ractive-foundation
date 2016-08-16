@@ -35,7 +35,5 @@ function template(options) {
 }
 
 module.exports = function(defaults) {
-	return function(options) {
-		return template(_.assign({}, defaults, options));
-	};
+	return (options) => template(_.assign({}, defaults, options));
 };

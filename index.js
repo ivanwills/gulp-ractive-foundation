@@ -6,6 +6,7 @@ var component     = require('./gulp/component'),
 	manifest      = require('./gulp/manifest'),
 	documentation = require('./gulp/documentation'),
 	bdd           = require('./gulp/bdd'),
+	filter        = require('./gulp/filter'),
 	_             = require('lodash'),
 	fs            = require('fs'),
 	path          = require('path');
@@ -13,9 +14,10 @@ var component     = require('./gulp/component'),
 var defaults = {
 	files: {
 		useCases:   'use-cases/*.json',
-		components: '{{component}}.js',
-		templates:  '{{component}}.hbs',
+		components: '{{name}}.js',
+		templates:  '{{name}}.hbs',
 		partials:   'partials/*.hbs',
+		manifest:   'manifest.json',
 	},
 	type:             'components',
 	buildTemplates:   'src/buildTemplates',
@@ -24,11 +26,12 @@ var defaults = {
 	tripleDelimiters: ['{{{', '}}}'],
 	format:           'pretty',
 	prefix: {
-		components:  'Ractive.components',
-		decorators:  'Ractive.decorators',
-		partials:    'Ractive.components',
-		templates:   'var templates; if (!templates) templates=[];\ntemplates',
-		transitions: 'Ractive.transitions',
+		parent:      'Ractive',
+		components:  'components',
+		decorators:  'decorators',
+		partials:    'partials',
+		templates:   'defaults.templates',
+		transitions: 'transitions',
 	},
 	file2object: function (file, options) {
 		file = typeof file === 'string' ? file : file.path;
@@ -68,7 +71,8 @@ module.exports = function(options) {
 		plugin       : plugin(options),
 		manifest     : manifest(options),
 		documentation: documentation(options),
-		bdd          : bdd(options)
+		bdd          : bdd(options),
+		filter       : filter(options),
 	};
 
 	return object;
