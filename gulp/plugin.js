@@ -38,9 +38,6 @@ function plugin(options) {
 }
 
 module.exports = function(defaults) {
-	return function(options) {
-		options = options ? _.merge(_.clone(defaults), options) : _.clone(defaults);
-
-		return plugin(options);
+	return (options) => plugin(_.assign({}, defaults, options));
 	};
 };

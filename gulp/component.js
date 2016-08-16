@@ -27,10 +27,7 @@ function component(options) {
 	});
 }
 
-module.exports = (defaults) => {
-	return (options) => {
-		options = options ? _.merge(_.clone(defaults), options) : _.clone(defaults);
 
-		return component(options);
-	};
+module.exports = function(defaults) {
+		return (options) => component(_.assign({}, defaults, options));
 };

@@ -85,9 +85,5 @@ function manifest(file, options) {
 }
 
 module.exports = function(defaults) {
-	return function(file, options) {
-		options = options ? _.merge(_.clone(defaults), options) : _.clone(defaults);
-
-		return manifest(file, options);
-	};
+	return (file, options) => manifest(file, _.assign({}, defaults, options));
 };

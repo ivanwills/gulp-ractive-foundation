@@ -62,7 +62,7 @@ var defaults = {
 
 module.exports = function(options) {
 	// set up defaults
-	options = options ? _.merge(_.clone(defaults), options) : _.clone(defaults);
+	options = _.assign({}, defaults, options);
 
 	// initialise the components
 	var object = {
