@@ -29,5 +29,5 @@ function component(options) {
 
 
 module.exports = function(defaults) {
-		return (options) => component(_.assign({}, defaults, options));
+	return (options) => component(_.assign({}, defaults, options));
 };
