@@ -42,12 +42,9 @@ function filter(options) {
 module.exports = (defaults) => {
 	return (options) => {
 		if (options instanceof RegExp || options instanceof Function) {
-			options = _.merge({}, defaults, { filter: options });
-		}
-		else {
-			options = options ? _.merge({}, defaults, options) : _.clone(defaults);
+			options = { filter: options };
 		}
 
-		return filter(options);
+		return filter(Object.assign({}, defaults, options));
 	};
 };
