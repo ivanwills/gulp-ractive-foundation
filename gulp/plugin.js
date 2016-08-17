@@ -30,9 +30,7 @@ function plugin(options) {
 				file.path = file.base + options.file2object(file, options) + '.js';
 				file.contents = new Buffer(contents[0]);
 
-				this.push(file);
-
-				callback();
+				callback(null, file);
 			}.bind(this));
 	});
 }

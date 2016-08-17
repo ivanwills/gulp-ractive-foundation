@@ -23,12 +23,10 @@ function template(options) {
 			.then(function(contents) {
 				file.contents = new Buffer(contents);
 
-				this.push(file);
-
-				callback();
+				callback(null, file);
 			}.bind(this))
 			.catch(function() {
-				console.log(arguments);
+				console.error(arguments);
 				callback();
 			});
 	});

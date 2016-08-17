@@ -25,7 +25,7 @@ function manifest(file, options) {
 		throw new PluginError(PLUGIN_NAME, `Missing path in file options for ${PLUGIN_NAME}`);
 	}
 
-	var bufferManifests = function (file, enc, callback) {
+	var bufferManifests = (file, enc, callback) => {
 		if (file.isNull()) {
 			callback();
 			return;
@@ -47,14 +47,14 @@ function manifest(file, options) {
 		}
 
 		util.getManifest(file.path, options)
-			.then(function(contents) {
+			.then((contents) => {
 				manifest[contents.name] = contents;
 
 				callback();
-			}.bind(this));
+			});
 	};
 
-	var endStream = function (callback) {
+	var endStream = (callback) => {
 		// no files passed in, no file goes out
 		if (!latestFile || !manifest) {
 			callback();
@@ -76,14 +76,12 @@ function manifest(file, options) {
 
 		joinedFile.contents = new Buffer(JSON.stringify(manifest));
 
-		this.push(joinedFile);
-
-		callback();
+		callback(null, joinedFile);
 	};
 
 	return through.obj(bufferManifests, endStream);
 }
 
-module.exports = function(defaults) {
+module.exports = (defaults) => {
 	return (file, options) => manifest(file, _.assign({}, defaults, options));
 };

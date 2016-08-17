@@ -14,9 +14,9 @@ const PLUGIN_NAME = 'gulp-ractive-foundation-documentation';
 
 function documentation(options) {
 	options.ractive = util.getTemplates(options.partials, _.clone(options, 1))
-		.then(function(partials) {
+		.then((partials) => {
 			return readFile(options.template, 'UTF-8')
-				.then(function(contents) {
+				.then((contents) => {
 					var template = Ractive.parse(contents, options);
 
 					return new Ractive({
@@ -28,28 +28,26 @@ function documentation(options) {
 					});
 			});
 		})
-		.catch(function(err) {
+		.catch((err) => {
 			throw new PluginError(PLUGIN_NAME, `Could not initialise Ractive: ${err}`);
 		});
 
-	return through.obj(function (file, enc, callback) {
+	return through.obj((file, enc, callback) => {
 		if (file.isStream()) {
 			this.emit('error', new PluginError(PLUGIN_NAME, 'Streams are not supported!'));
 			return callback();
 		}
 
 		util.getDocumentation(file.path, options)
-			.then(function(contents) {
+			.then((contents) => {
 				file.path = file.base + options.file2object(file, options) + '.html';
 				file.contents = new Buffer(contents);
 
-				this.push(file);
-
-				callback();
-			}.bind(this));
+				callback(null, file);
+			});
 	});
 }
 
-module.exports = function(defaults) {
+module.exports = (defaults) => {
 	return (options) => documentation(_.assign({}, defaults, options));
 };
