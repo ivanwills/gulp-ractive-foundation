@@ -18,7 +18,7 @@ Ractive.DEBUG = false;
 // eg test  => .test
 // or ux-test => ['ux-test']
 var addObjectName = function(name) {
-	return name.match(/^[$_a-zA-Z]\w+$/) ? '.' + name : '["' + name + '"]';
+	return name.match(/^[$_a-zA-Z]\w+$/) ? `.${name}` : `['${name}']`;
 };
 
 // returns the full object name
@@ -35,14 +35,14 @@ var addName = function(options, name, contents) {
 var saftyPrefix = function(options, type) {
 	var prefixParts = options.prefix[type].split(/[.]/);
 	var currPrefix  = prefixParts.shift();
-	var out         = 'if (!' + options.prefix.parent + '.' + currPrefix + ') {\n' +
-		'\t' + options.prefix.parent + '.' + currPrefix + ' = {};\n' +
+	var out         = `if (!${options.prefix.parent}.${currPrefix}) {\n` +
+		`\t${options.prefix.parent}.${currPrefix} = {};\n` +
 		'}\n';
 
 	for (var i in prefixParts) {
-		currPrefix += '.' + prefixParts[i];
-		out += 'if (!' + options.prefix.parent + '.' + currPrefix + ') {\n' +
-			'\t' + options.prefix.parent + '.' + currPrefix + ' = {};\n' +
+		currPrefix += `.${prefixParts[i]}`;
+		out += `if (!${options.prefix.parent}.${currPrefix}) {\n` +
+			`\t${options.prefix.parent}.${currPrefix} = {};\n` +
 			'}\n';
 	}
 	return out;
@@ -125,7 +125,7 @@ var getComponents = function(componentsDir, objectName, options) {
 				if (fs.statSync(component).isDirectory()) {
 					var subOptions = _.clone(options, 1);
 					subOptions.inner = true;
-					list.push(getComponent(component + path.sep + 'manifest.json', subOptions)
+					list.push(getComponent(`${component}${path.sep}manifest.json`, subOptions)
 						.then(function(js) {
 							return js[0];
 						})
@@ -140,7 +140,7 @@ var getComponents = function(componentsDir, objectName, options) {
 
 // Build the component from "file"
 getComponent = function(file, options) {
-	var nameRE     = new RegExp(path.sep + '([^' + path.sep + ']+)$');
+	var nameRE     = new RegExp(`${path.sep}([^${path.sep}]+)$`);
 	var dir        = file.replace(nameRE, '');
 	var name       = dir.match(nameRE)[1];
 	var fullName   = objectName(options, name);

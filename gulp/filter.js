@@ -26,8 +26,8 @@ function filter(options) {
 			name = options.filter(file.path);
 		}
 
-		var re = new RegExp('(^.*?' + name + ').*$');
-		var newName = file.path.replace(re, '$1' + path.sep + 'manifest.json');
+		var re = new RegExp(`(^.*${name}).*$`);
+		var newName = file.path.replace(re, `$1${path.sep}manifest.json`);
 
 		if (! seen[newName]) {
 			file.path = newName;

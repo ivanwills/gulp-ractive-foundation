@@ -22,7 +22,7 @@ function manifest(file, options) {
 		fileName = path.basename(file.path);
 	}
 	else {
-		throw new PluginError(PLUGIN_NAME, 'Missing path in file options for ' + PLUGIN_NAME);
+		throw new PluginError(PLUGIN_NAME, `Missing path in file options for ${PLUGIN_NAME}`);
 	}
 
 	var bufferManifests = function (file, enc, callback) {

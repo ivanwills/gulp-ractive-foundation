@@ -29,7 +29,7 @@ function documentation(options) {
 			});
 		})
 		.catch(function(err) {
-			throw new PluginError(PLUGIN_NAME, 'Could not initialise Ractive: ' + err);
+			throw new PluginError(PLUGIN_NAME, `Could not initialise Ractive: ${err}`);
 		});
 
 	return through.obj(function (file, enc, callback) {
