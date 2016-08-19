@@ -2,7 +2,7 @@
 var del            = require('del'),
 	gulp           = require('gulp'),
 	grf            = require('./index.js')(),
-	//seleniumServer = require('./node_modules/ractive-foundation/tasks/seleniumServer'),
+	seleniumServer = require('./gulp/seleniumServer'),
 	mergeStream    = require('merge-stream'),
 	runSequence    = require('run-sequence'),
 	sass           = require('gulp-sass'),
@@ -103,31 +103,31 @@ gulp.task('build-documentation-plugins', () => {
 		.pipe(gulp.dest('public/plugins'));
 });
 
-//gulp.task('bdd', function (callback) {
-//	var selServer = seleniumServer(),
-//		killed    = false;
-//	return gulp.src([
-//			'src/components/*/*.feature',
-//			'src/plugins/*/*.feature',
-//		])
-//		.pipe(grf.bdd({
-//			selServer: selServer.init(),
-//			steps    : [
-//				'src/components/*/*.steps.js',
-//				'src/plugins/*/*.steps.js',
-//			]
-//		}))
-//		.on('end', function() {
-//			if (!killed) {
-//				killed = true;
-//				var done = () => {};
-//				selServer
-//					.killServer()
-//					.then(done)
-//					.catch(done);
-//			}
-//		});
-//});
+gulp.task('bdd', function (callback) {
+	var selServer = seleniumServer(),
+		killed    = false;
+	return gulp.src([
+			'src/components/*/*.feature',
+			'src/plugins/*/*.feature',
+		])
+		.pipe(grf.bdd({
+			selServer: selServer.init(),
+			steps    : [
+				'src/components/*/*.steps.js',
+				'src/plugins/*/*.steps.js',
+			]
+		}))
+		.on('end', function() {
+			if (!killed) {
+				killed = true;
+				var done = () => {};
+				selServer
+					.killServer()
+					.then(done)
+					.catch(done);
+			}
+		});
+});
 
 gulp.task('sass', () => {
 

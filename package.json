@@ -33,6 +33,7 @@
     "lodash": "^4.0.0",
     "q": "^1.4.1",
     "ractive": "^0.7.3",
+    "selenium-standalone": "~4.2.2",
     "simple-glob": "^0.1.0",
     "through2": "~0.6.3",
     "vinyl-sourcemaps-apply": "^0.2.0"
