@@ -6,12 +6,12 @@ var _        = require('lodash'),
 
 module.exports = function (options) {
 
-	var server;
-	var seleniumServer;
-	var isSeleniumServerRunning;
-	var options = options || {};
-	var seleniumOptions = options.seleniumOptions || {};
-	var seleniumInstallOptions = options.seleniumInstallOptions || {};
+	var server,
+		seleniumServer,
+		isSeleniumServerRunning,
+		options                = options || {},
+		seleniumOptions        = options.seleniumOptions || {},
+		seleniumInstallOptions = options.seleniumInstallOptions || {};
 
 	options = _.defaults(options, {
 		install: true
@@ -132,19 +132,19 @@ module.exports = function (options) {
 		var promise = options.install ? installDrivers(seleniumInstallOptions) : Q.resolve();
 
 		return promise.then(function () {
-			return pingSelenium(options);
-		}).then(function (isServerRunning) {
-			return isServerRunning ? Q.resolve() : startServer(seleniumOptions);
-		});
+				return pingSelenium(options);
+			})
+			.then(function (isServerRunning) {
+				return isServerRunning ? Q.resolve() : startServer(seleniumOptions);
+			});
 
 	};
 
 	return {
 		installDrivers: installDrivers,
-		killServer: killServer,
-		startServer: startServer,
-		pingSelenium: pingSelenium,
-		init: init
+		killServer    : killServer,
+		startServer   : startServer,
+		pingSelenium  : pingSelenium,
+		init          : init
 	};
-
 };
